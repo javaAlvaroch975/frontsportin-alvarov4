@@ -13,18 +13,18 @@
   }
 
   <!-- Búsqueda por descripción usando debounce -->
-   @if(tipoarticulo() <= 0) {
-  <div class="d-flex justify-content-center my-2">
-    <input
-      class="form-control me-2"
-      type="search"      
-      placeholder="Buscar por descripción"
-      aria-label="Search"
-      (input)="onSearchDescription($event.target.value)"
-      [value]="descripcion()"
-      name="searchDescription"
-    />
-  </div>
+  @if (tipoarticulo() <= 0) {
+    <div class="d-flex justify-content-center my-2">
+      <input
+        class="form-control me-2"
+        type="search"
+        placeholder="Buscar por descripción"
+        aria-label="Search"
+        (input)="onSearchDescription($event.target.value)"
+        [value]="descripcion()"
+        name="searchDescription"
+      />
+    </div>
   }
 
   <!-- Total registros -->
@@ -42,8 +42,6 @@
       <!-- quitar el filtro -->
     }
   </div>
-        
-  
 
   <!-- Ocultar paginación y RPP si no hay registros -->
   @if (totalRecords() > 0) {
@@ -157,20 +155,47 @@
             </td>
 
             <td>
-              {{ oArticulo.tipoarticulo.descripcion | trim: 20 }}
-              {{ ' (' + oArticulo.tipoarticulo.id + ')' }}
+              <a [routerLink]="['/tipoarticulo', '/view', oArticulo.tipoarticulo.id]">
+                {{ oArticulo.tipoarticulo.descripcion | trim: 20 }}
+                {{ ' (' + oArticulo.tipoarticulo.id + ')' }}
+              </a>
               <!-- Botón alineado a la derecha para filtrar tipoarticulo -->
               <a
                 class="btn btn-warning btn-sm ms-2 float-end"
-                [routerLink]="['/articulo/', oArticulo.tipoarticulo.id]"
+                [routerLink]="['/articulo', oArticulo.tipoarticulo.id]"
                 role="button"
                 title="Editar"
                 ><i class="bi bi-funnel-fill" aria-hidden="true"></i
               ></a>
             </td>
-            <td style="text-align: center">{{ oArticulo.comentarioarts }}</td>
-            <td style="text-align: center">{{ oArticulo.compras }}</td>
-            <td style="text-align: center">{{ oArticulo.carritos }}</td>
+            <td style="text-align: center">
+              @if (oArticulo.comentarioarts === 0) {
+                <i class="bi bi-ban" aria-hidden="true"></i> 
+              } @else {
+                <a [routerLink]="['/comentarioart', oArticulo.id]">
+                  {{ oArticulo.comentarioarts }}
+                </a>
+              }
+            </td>
+            <td style="text-align: center">
+              @if (oArticulo.compras === 0) {
+                <!-- icono de vacío-->
+                <i class="bi bi-ban" aria-hidden="true"></i> 
+              } @else {
+                <a [routerLink]="['/compra', oArticulo.id]">
+                  {{ oArticulo.compras }}
+                </a>
+              }
+            </td>
+            <td style="text-align: center">
+              @if (oArticulo.carritos === 0) {
+                <i class="bi bi-ban" aria-hidden="true"></i> 
+              } @else {
+                <a [routerLink]="['/carrito', oArticulo.id]">
+                  {{ oArticulo.carritos }}
+                </a>
+              }
+            </td>
             <td>
               <div class="d-flex justify-content-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
