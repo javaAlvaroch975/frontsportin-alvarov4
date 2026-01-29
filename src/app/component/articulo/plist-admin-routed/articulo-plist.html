@@ -13,6 +13,7 @@
   }
 
   <!-- Búsqueda por descripción usando debounce -->
+   @if(tipoarticulo() <= 0) {
   <div class="d-flex justify-content-center my-2">
     <input
       class="form-control me-2"
@@ -24,6 +25,7 @@
       name="searchDescription"
     />
   </div>
+  }
 
   <!-- Total registros -->
   <div class="d-flex justify-content-center my-1">
