@@ -6,6 +6,7 @@ import { PartidoPlistAdminRouted } from './component/partido/plist-admin-routed/
 export const routes: Routes = [
     { path: '', component: Home },
     { path: 'articulo', component: ArticuloPlistAdminRouted},
+    { path: 'articulo/:tipoarticulo', component: ArticuloPlistAdminRouted},    
     { path: 'partido', component: PartidoPlistAdminRouted},
-    { path: 'articulo/:tipoarticulo', component: ArticuloPlistAdminRouted}    
+    { path: 'partido/:id_liga', component: PartidoPlistAdminRouted}
 ];
