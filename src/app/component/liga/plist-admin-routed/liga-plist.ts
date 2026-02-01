@@ -5,7 +5,7 @@ import { LigaService } from '../../../service/liga';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Paginacion } from "../../shared/paginacion/paginacion";
 import { BotoneraRpp } from "../../shared/botonera-rpp/botonera-rpp";
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { debounceTimeSearch } from '../../../environment/environment';
@@ -29,14 +29,22 @@ export class LigaPlistAdminRouted implements OnInit, OnDestroy {
   orderField = signal<string>('id');
   orderDirection = signal<'asc' | 'desc'>('asc');
 
+  // Variables de filtro
+  equipo = signal<number>(0);
+
   // Variables de búsqueda
   nombre = signal<string>('');
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
 
-  constructor(private oLigaService: LigaService) { }
+  constructor(private oLigaService: LigaService, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('equipo');
+    if (id) {
+      this.equipo.set(+id);
+    }
+
     // Configurar el debounce para la búsqueda
     this.searchSubscription = this.searchSubject
       .pipe(
@@ -65,6 +73,7 @@ export class LigaPlistAdminRouted implements OnInit, OnDestroy {
       this.orderField(),
       this.orderDirection(),
       this.nombre(),
+      this.equipo(),
     ).subscribe({
       next: (data: IPage<ILiga>) => {
         this.oPage.set(data);

@@ -18,6 +18,13 @@
     <!-- Total registros -->
     <div class="d-flex justify-content-center my-1">
         <small class="text-muted">Total registros: {{ totalElementsCount() }}</small>
+        @if (equipo() > 0) {
+          <small class="text-muted ms-3">Filtro: id de equipo = {{ equipo() }}</small>
+          <!-- quitar el filtro -->
+          <a class="ms-2" [routerLink]="['/liga']" role="button" title="Quitar filtro"
+            ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
+          >
+        }
         @if (nombre().length > 0) {
           <small class="text-muted ms-3">Filtro: nombre contiene "{{ nombre() }}"</small>
         }
@@ -85,7 +92,7 @@
                       <!-- Botón alineado a la derecha para filtrar equipo -->
                       <a
                         class="btn btn-warning btn-sm ms-2 float-end"
-                        [routerLink]="['/liga/', oLiga.equipo.id]"
+                        [routerLink]="['/liga', oLiga.equipo.id]"
                         role="button"
                         title="Editar"
                         ><i class="bi bi-funnel-fill" aria-hidden="true"></i

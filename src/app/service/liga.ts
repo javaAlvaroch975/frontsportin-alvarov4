@@ -17,12 +17,19 @@ export class LigaService {
     order: string = '',
     direction: string = '',
     nombre: string = '',
+    equipo: number = 0,
   ): Observable<IPage<ILiga>> {
     if (order === '') {
       order = 'id';
     }
     if (direction === '') {
       direction = 'asc';
+    }
+    if (equipo > 0) {
+      return this.oHttp.get<IPage<ILiga>>(
+        serverURL +
+          `/liga?page=${page}&size=${rpp}&sort=${order},${direction}&equipo=${equipo}`,
+      );
     }
     if (nombre && nombre.length > 0) {
       return this.oHttp.get<IPage<ILiga>>(
