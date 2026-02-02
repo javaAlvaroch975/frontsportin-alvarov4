@@ -1,0 +1,42 @@
+<div class="container my-2">
+  <div class="d-flex justify-content-center my-3">
+    <h1>Lista de los Tipos de usuario</h1>
+  </div>
+
+  <!-- Total registros -->
+  <div class="d-flex justify-content-center mt-4 mb-5">
+    <small class="text-muted">Total registros: {{ tipousuarios().length }}</small>
+  </div>
+
+  <div class="d-flex justify-content-center">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" (click)="sortColumn('id')" 
+              [class.sortable-active]="orderField === 'id'" style="cursor: pointer; width: 25%; text-align: center">
+            ID <i class="bi" [ngClass]="orderField === 'id' ? (orderDirection === 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-caret-down'"></i>
+          </th>
+          <th scope="col" (click)="sortColumn('descripcion')" 
+              [class.sortable-active]="orderField === 'descripcion'" style="cursor:pointer;">
+            Descripción <i class="bi" [ngClass]="orderField === 'descripcion' ? (orderDirection === 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill') : 'bi-caret-down'"></i>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tipousuario of tipousuarios(); track tipousuario.id) {
+          <tr>
+            <th scope="row" class="text-center">{{ tipousuario.id }}</th>
+            <td>{{ tipousuario.descripcion }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="2" class="text-center py-5 text-muted pe-none">
+              <i class="bi bi-people fs-1 d-block mb-2"></i>
+              No hay tipos de usuarios todavía
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

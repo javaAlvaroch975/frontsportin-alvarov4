@@ -1,0 +1,201 @@
+<div class="container my-2">
+  <div class="d-flex justify-content-center my-3">
+    <h1>Lista de Noticias</h1>
+  </div>
+
+  <!-- Aviso (mensaje desde queryParams) -->
+  @if (message()) {
+    <div class="d-flex justify-content-center my-2">
+      <div class="alert alert-success w-100 text-center" role="alert">
+        {{ message() }}
+      </div>
+    </div>
+  }
+
+  <!-- Búsqueda por título usando debounce -->
+  @if (club() <= 0) {
+    <div class="d-flex justify-content-center my-2">
+      <input
+        class="form-control me-2"
+        type="search"
+        placeholder="Buscar por título"
+        aria-label="Search"
+        (input)="onSearchTitulo(($any($event.target)).value)"
+        [value]="titulo()"
+        name="searchTitulo"
+      />
+    </div>
+  }
+
+  <!-- Total registros -->
+  <div class="d-flex justify-content-center my-1">
+    <small class="text-muted">Total registros: {{ totalRecords() || 0 }}</small>
+    @if (club() > 0) {
+      <small class="text-muted ms-3">Filtro: id de club = {{ club() }}</small>
+      <!-- quitar el filtro -->
+      <a class="ms-2" [routerLink]="['/noticia']" role="button" title="Quitar filtro"
+        ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
+      >
+    }
+    @if (titulo().length > 0) {
+      <small class="text-muted ms-3">Filtro: título contiene "{{ titulo() }}"</small>
+    }
+  </div>
+
+  <!-- Ocultar paginación y RPP si no hay registros -->
+  @if (totalRecords() > 0) {
+    <div class="d-flex justify-content-end my-1">
+      <app-botonera-rpp [numRpp]="numRpp()" (rppChange)="onRppChange($event)"> </app-botonera-rpp>
+    </div>
+  }
+
+  <div class="d-flex justify-content-center">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" (click)="onOrder('id')" style="cursor: pointer; width: 5%">
+            <span class="header-inline"
+              >ID
+              @if (orderField() === 'id') {
+                @if (orderDirection() === 'asc') {
+                  <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+                }
+                @if (orderDirection() === 'desc') {
+                  <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
+                }
+              }
+            </span>
+          </th>
+          <th scope="col" (click)="onOrder('titulo')" style="cursor: pointer; width: 20%">
+            <span class="header-inline"
+              >Título
+              @if (orderField() === 'titulo') {
+                @if (orderDirection() === 'asc') {
+                  <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+                }
+                @if (orderDirection() === 'desc') {
+                  <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
+                }
+              }
+            </span>
+          </th>
+          <th scope="col" style="width: 18%">
+            <span class="header-inline">Contenido</span>
+          </th>
+          <th scope="col" (click)="onOrder('fecha')" style="cursor: pointer; width: 12%">
+            <span class="header-inline"
+              >Fecha
+              @if (orderField() === 'fecha') {
+                @if (orderDirection() === 'asc') {
+                  <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+                }
+                @if (orderDirection() === 'desc') {
+                  <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
+                }
+              }
+            </span>
+          </th>
+          <th scope="col" (click)="onOrder('club')" style="cursor: pointer; width: 22%">
+            <span class="header-inline"
+              >Club
+              @if (orderField() === 'club') {
+                @if (orderDirection() === 'asc') {
+                  <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+                }
+                @if (orderDirection() === 'desc') {
+                  <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
+                }
+              }
+            </span>
+          </th>
+          <th scope="col" style="width: 8%">
+            <span class="header-inline">Comentarios</span>
+          </th>
+          <th scope="col" style="width: 8%">
+            <span class="header-inline">Puntuación</span>
+          </th>
+          <th scope="col" style="width: 7%">
+            <span class="header-inline">Acciones</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (oNoticia of oPage()?.content; track oNoticia.id) {
+          <tr>
+            <th scope="row" style="text-align: center">{{ oNoticia.id }}</th>
+            <td>{{ oNoticia.titulo | trim: 30 }}</td>
+            <td>{{ oNoticia.contenido | trim: 50 }}</td>
+            <td>{{ oNoticia.fecha | datetime }}</td>
+            <td>
+              <a [routerLink]="['/club', '/view', oNoticia.club.id]">
+                {{ (oNoticia.club.nombre || 'Club ' + oNoticia.club.id) | trim: 20 }}
+                {{ ' (' + oNoticia.club.id + ')' }}
+              </a>
+              <!-- Botón alineado a la derecha para filtrar club -->
+              <a
+                class="btn btn-warning btn-sm ms-2 float-end"
+                [routerLink]="['/noticia', oNoticia.club.id]"
+                role="button"
+                title="Filtrar por club"
+                ><i class="bi bi-funnel-fill" aria-hidden="true"></i
+              ></a>
+            </td>
+            <td style="text-align: center">
+              @if (!oNoticia.comentarios || oNoticia.comentarios === 0) {
+                <i class="bi bi-ban" aria-hidden="true"></i>
+              } @else {
+                <a [routerLink]="['/comentarionoticia', oNoticia.id]">
+                  {{ oNoticia.comentarios }}
+                </a>
+              }
+            </td>
+            <td style="text-align: center">
+              @if (oNoticia.puntuaciones === null || oNoticia.puntuaciones === undefined) {
+                <i class="bi bi-ban" aria-hidden="true"></i>
+              } @else {
+                {{ oNoticia.puntuaciones | number: '1.1-1' }}
+              }
+            </td>
+            <td>
+              <div class="d-flex justify-content-center">
+                <a
+                  class="btn btn-primary btn-sm me-1"
+                  [routerLink]="['/noticia', '/view', oNoticia.id]"
+                  role="button"
+                  title="Ver"
+                  ><i class="bi bi-eye-fill" aria-hidden="true"></i
+                ></a>
+                <a
+                  class="btn btn-warning btn-sm me-1"
+                  [routerLink]="['/noticia', '/edit', oNoticia.id]"
+                  role="button"
+                  title="Editar"
+                  ><i class="bi bi-pencil-fill" aria-hidden="true"></i
+                ></a>
+                <a
+                  class="btn btn-danger btn-sm"
+                  [routerLink]="['/noticia', '/delete', oNoticia.id]"
+                  role="button"
+                  title="Eliminar"
+                  ><i class="bi bi-trash-fill" aria-hidden="true"></i
+                ></a>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación inferior -->
+  @if (totalRecords() > 0) {
+    <div class="d-flex justify-content-start my-1">
+      <app-paginacion
+        [numPage]="numPage()"
+        [numPages]="oPage()?.totalPages || 1"
+        (pageChange)="goToPage($event)"
+      >
+      </app-paginacion>
+    </div>
+  }
+</div>

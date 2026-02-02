@@ -1,0 +1,7 @@
+/* Truncate long text cells */
+.text-truncate-col {
+	max-width: 420px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
