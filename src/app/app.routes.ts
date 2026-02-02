@@ -9,5 +9,4 @@ export const routes: Routes = [
     { path: 'articulo', component: ArticuloPlistAdminRouted},
     { path: 'articulo/:tipoarticulo', component: ArticuloPlistAdminRouted},
     { path: 'categoria', component: CategoriaPlistAdminRouted},
-    { path: 'categoria/:tipocategoria', component: CategoriaPlistAdminRouted}
 ];
