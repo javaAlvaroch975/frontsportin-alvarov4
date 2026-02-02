@@ -13,7 +13,7 @@ import { debounceTimeSearch } from '../../../environment/environment';
 
 @Component({
   selector: 'app-categoria-plist',
-  imports: [Paginacion, BotoneraRpp, TrimPipe, RouterLink],
+  imports: [Paginacion, BotoneraRpp, RouterLink],
   templateUrl: './categoria-plist.html',
   styleUrl: './categoria-plist.css',
 })
@@ -30,7 +30,21 @@ export class CategoriaPlistAdminRouted {
 
   // Mensajes y total
   message = signal<string | null>(null);
-  totalRecords = computed(() => this.oPage()?.totalElements ?? 0);
+  
+  // Computed que devuelve el total correcto según si hay búsqueda o filtro
+  totalRecords = computed(() => {
+    const page = this.oPage();
+    if (!page) return 0;
+    
+    // Si hay búsqueda o filtro activo, mostrar el número de resultados filtrados
+    if (this.nombre().length > 0 || this.temporada() > 0) {
+      return page.content.length;
+    }
+    
+    // Si no hay búsqueda ni filtro, mostrar el total de la base de datos
+    return page.totalElements ?? 0;
+  });
+  
   private messageTimeout: any = null;
 
   // Variables de ordenamiento
@@ -38,12 +52,13 @@ export class CategoriaPlistAdminRouted {
   orderDirection = signal<'asc' | 'desc'>('asc');
 
   // Variables de filtro
-  tipoarticulo = signal<number>(0);
+  temporada = signal<number>(0);
 
   // Variables de búsqueda
-  descripcion = signal<string>('');
+  nombre = signal<string>('');
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
+  private routeSubscription?: Subscription;
 
   constructor(
     private oCategoriaService: CategoriaService,
@@ -51,44 +66,94 @@ export class CategoriaPlistAdminRouted {
   ) {}
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('tipoarticulo');
+    // Leer el parámetro inicial
+    const id = this.route.snapshot.paramMap.get('temporada');
     if (id) {
-      this.tipoarticulo.set(+id);
+      this.temporada.set(+id);
     }
+
+    // Suscribirse a cambios en los parámetros de ruta
+    this.routeSubscription = this.route.paramMap.subscribe(params => {
+      const temporadaId = params.get('temporada');
+      console.log('Cambio en ruta, temporada:', temporadaId);
+      
+      if (temporadaId) {
+        this.temporada.set(+temporadaId);
+      } else {
+        this.temporada.set(0);
+      }
+      
+      // Resetear búsqueda cuando cambias de filtro de temporada
+      this.nombre.set('');
+      this.numPage.set(0);
+      this.getPage();
+    });
 
     // Configurar el debounce para la búsqueda
     this.searchSubscription = this.searchSubject
       .pipe(
-        debounceTime(debounceTimeSearch), // Espera 800ms después de que el usuario deje de escribir
-        distinctUntilChanged(), // Solo emite si el valor cambió
+        debounceTime(debounceTimeSearch),
+        distinctUntilChanged(),
       )
       .subscribe((searchTerm: string) => {
-        this.descripcion.set(searchTerm);
+        console.debug('categoria: debounced search term ->', searchTerm);
+        this.nombre.set(searchTerm);
         this.numPage.set(0);
         this.getPage();
       });
-
-    this.getPage();
   }
 
   ngOnDestroy() {
-    // Limpiar la suscripción para evitar memory leaks
+    // Limpiar las suscripciones para evitar memory leaks
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
   }
 
   getPage() {
+    console.debug('categoria: getPage params', {
+      page: this.numPage(),
+      rpp: this.numRpp(),
+      order: this.orderField(),
+      direction: this.orderDirection(),
+      nombre: this.nombre(),
+      temporada: this.temporada(),
+    });
+
     this.oCategoriaService
       .getPage(
         this.numPage(),
         this.numRpp(),
         this.orderField(),
         this.orderDirection(),
+        '', // No enviar el filtro de nombre al backend
+        0,  // No enviar el filtro de temporada al backend
       )
       .subscribe({
         next: (data: IPage<ICategoria>) => {
-          this.oPage.set(data);
+          let filtered = data.content;
+          
+          // Filtrar por temporada si está activo
+          if (this.temporada() > 0) {
+            filtered = filtered.filter((cat) => cat.temporada.id === this.temporada());
+          }
+          
+          // Filtrar por nombre si está activo
+          if (this.nombre().length > 0) {
+            filtered = filtered.filter((cat) =>
+              cat.nombre.toLowerCase().includes(this.nombre().toLowerCase()),
+            );
+          }
+          
+          // Actualizar la página con el contenido filtrado
+          this.oPage.set({ 
+            ...data, 
+            content: filtered
+          });
+          
           if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
             this.numPage.set(data.totalPages - 1);
             this.getPage();
@@ -126,9 +191,7 @@ export class CategoriaPlistAdminRouted {
     this.rellenaCantidad.set(+value);
   }
 
-  onSearchDescription(value: string) {
-    // Emitir el valor al Subject para que sea procesado con debounce
+  onSearchName(value: string) {
     this.searchSubject.next(value);
   }
-
 }

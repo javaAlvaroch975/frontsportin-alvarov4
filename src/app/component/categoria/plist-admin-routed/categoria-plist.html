@@ -12,22 +12,37 @@
     </div>
   }
 
-  <!-- Búsqueda por descripción usando debounce -->
-  <!-- Aquí podrías poner un filtro por nombre si lo implementas en el ts -->
+  <!-- Búsqueda por nombre usando debounce -->
+  @if (temporada() <= 0) {
+    <div class="d-flex justify-content-center my-2">
+      <input
+        class="form-control me-2"
+        type="search"
+        placeholder="Buscar por nombre"
+        aria-label="Search"
+        (input)="onSearchName($event.target.value)"
+        [value]="nombre()"
+        name="searchNombre"
+      />
+    </div>
+  }
 
   <!-- Total registros -->
   <div class="d-flex justify-content-center my-1">
     <small class="text-muted">Total registros: {{ totalRecords() || 0 }}</small>
-    @if (tipoarticulo() > 0) {
-      <small class="text-muted ms-3">Filtro: id de tipo de artículo = {{ tipoarticulo() }}</small>
+    @if (temporada() > 0) {
+      <small class="text-muted ms-3">Filtro: id de temporada = {{ temporada() }}</small>
       <!-- quitar el filtro -->
-      <a class="ms-2" [routerLink]="['/articulo']" role="button" title="Quitar filtro"
+      <a class="ms-2" [routerLink]="['/categoria']" role="button" title="Quitar filtro"
         ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
       >
     }
-    @if (descripcion().length > 0) {
-      <small class="text-muted ms-3">Filtro: descripción contiene "{{ descripcion() }}"</small>
+    @if (nombre().length > 0) {
+      <small class="text-muted ms-3">Filtro: nombre contiene "{{ nombre() }}"</small>
       <!-- quitar el filtro -->
+      <a class="ms-2" [routerLink]="['/categoria']" role="button" title="Quitar filtro"
+        ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
+      >
     }
   </div>
 
@@ -112,20 +127,34 @@
             <th scope="row" style="text-align: center">{{ oCategoria.id }}</th>
             <td>{{ oCategoria.nombre }}</td>
             <td>
-              <a [routerLink]="['/temporada', '/view', oCategoria.temporada?.id]">
-                {{ oCategoria.temporada?.descripcion }} ({{ oCategoria.temporada?.id }})
+              <a [routerLink]="['/temporada', '/view', oCategoria.temporada.id]">
+                @if (oCategoria.temporada.nombre) {
+                  {{ oCategoria.temporada.nombre }} ({{ oCategoria.temporada.id }})
+                } @else {
+                  @if (oCategoria.temporada.id) {
+                    {{ 'Temporada (' + oCategoria.temporada.id + ')' }}
+                  } @else {
+                    Sin temporada
+                  }
+                }
               </a>
               <a
                 class="btn btn-warning btn-sm ms-2 float-end"
-                [routerLink]="['/categoria', oCategoria.temporada?.id]"
+                [routerLink]="['/categoria', oCategoria.temporada.id]"
                 role="button"
                 title="Filtrar por temporada"
               >
                 <i class="bi bi-funnel-fill" aria-hidden="true"></i>
               </a>
+           <td style="text-align: center">
+              @if (oCategoria.equipos === 0) {
+                <i class="bi bi-ban" aria-hidden="true"></i> 
+              } @else {
+                <a [routerLink]="['/equipos', oCategoria.id]">
+                  {{ oCategoria.equipos }}
+                </a>
+              }
             </td>
-            <td style="text-align: right">{{ oCategoria.equipos }}</td>
-            <td>
               <div class="d-flex justify-content-center">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                   <a
@@ -151,7 +180,7 @@
                   ></a>
                 </div>
               </div>
-            </td>
+            
           </tr>
         }
       </tbody>

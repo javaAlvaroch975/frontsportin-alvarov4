@@ -1,6 +1,3 @@
-// import { ITemporada } from "../model/temporada";
-// import { IClub } from "../model/club";
-
 export interface ICategoria {
   id: number
   nombre: string
@@ -10,7 +7,5 @@ export interface ICategoria {
 
 export interface ITemporada {
   id: number
-  descripcion: string
+  nombre?: string
 }
-
-

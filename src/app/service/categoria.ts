@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICategoria } from '../model/categoria';
+import { ICategoria, ITemporada } from '../model/categoria';
 import { Observable } from 'rxjs';
 import { IPage } from '../model/plist';
 import { HttpClient } from '@angular/common/http';
@@ -11,39 +11,38 @@ import { serverURL } from '../environment/environment';
 export class CategoriaService {
   constructor(private oHttp: HttpClient) { }
 
-  getPage(page: number, rpp: number, order: string = '', direction: string = ''): Observable<IPage<ICategoria>> {
-    let url = serverURL + `/categoria?page=${page}&size=${rpp}`;
-    if (order && direction) {
-      url += `&sort=${order},${direction}`;
+  getPage(
+    page: number,
+    rpp: number,
+    order: string = '',
+    direction: string = '',
+    nombre: string = '',
+    temporada: number = 0,
+  ): Observable<IPage<ICategoria>> {
+    if (order === '') {
+      order = 'id';
     }
-    return this.oHttp.get<IPage<ICategoria>>(url);
+    if (direction === '') {
+      direction = 'asc';
+    }
+
+    // Filtro por temporada tiene prioridad
+    if (temporada > 0) {
+      return this.oHttp.get<IPage<ICategoria>>(
+        serverURL + `/categoria?page=${page}&size=${rpp}&sort=${order},${direction}&id_temporada=${temporada}`
+      );
+    }
+
+    // Filtro por nombre
+    if (nombre && nombre.length > 0) {
+      return this.oHttp.get<IPage<ICategoria>>(
+        serverURL + `/categoria?page=${page}&size=${rpp}&sort=${order},${direction}&nombre=${nombre}`
+      );
+    }
+
+    // Sin filtros
+    return this.oHttp.get<IPage<ICategoria>>(
+      serverURL + `/categoria?page=${page}&size=${rpp}&sort=${order},${direction}`
+    );
   }
-
-  // get(id: number): Observable<ICategoria> {
-  //   return this.oHttp.get<ICategoria>(serverURL + '/categoria/' + id);
-  // }
-
-  // create(articulo: Partial<ICategoria>): Observable<number> {
-  //   return this.oHttp.post<number>(serverURL + '/categoria', articulo);
-  // }
-
-  // update(articulo: Partial<ICategoria>): Observable<number> {
-  //   return this.oHttp.put<number>(serverURL + '/categoria', articulo);
-  // }
-
-  // delete(id: number): Observable<number> {
-  //   return this.oHttp.delete<number>(serverURL + '/categoria/' + id);
-  // }
-
-  // empty(): Observable<number> {
-  //   return this.oHttp.delete<number>(serverURL + '/categoria/empty');
-  // }
-
-//   publicar(id: number): Observable<number> {
-//     return this.oHttp.put<number>(serverURL + '/categoria/publicar/' + id, {});
-//   }
-
-//   despublicar(id: number): Observable<number> {
-//     return this.oHttp.put<number>(serverURL + '/categoria/despublicar/' + id, {});
-//   }
 }
