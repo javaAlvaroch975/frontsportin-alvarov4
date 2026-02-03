@@ -24,6 +24,7 @@ import { PagoPlistComponent } from './component/pago/plist-admin-routed/pago-pli
 import { PuntuacionPlistAdminRouted } from './component/puntuacion/plist-admin-routed/puntuacion-plist';
 import { ViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { ComentarioartPlistAdminRouted } from './component/comentarioart/comentarioart-plist';
+import { CarritoViewAdminRouted } from './component/carrito/view-admin-routed/view-admin-routed';
 
 
 export const routes: Routes = [
@@ -69,6 +70,7 @@ export const routes: Routes = [
     { path: 'carrito', component: CarritoPlistAdminRouted },
     { path: 'carrito/usuario/:id_usuario', component: CarritoPlistAdminRouted },
     { path: 'carrito/articulo/:id_articulo', component: CarritoPlistAdminRouted },
+    { path: 'carrito/view/:id', component: CarritoViewAdminRouted },
     { path: 'comentario', component: ComentarioPlistAdminRouted },
     { path: 'comentario/usuario/:id_usuario', component: ComentarioPlistAdminRouted},
     { path: 'comentario/noticia/:id_noticia', component: ComentarioPlistAdminRouted},

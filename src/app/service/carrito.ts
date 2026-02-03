@@ -36,4 +36,10 @@ export class CarritoService {
     // Nota: el backend no filtra por idArticulo/idUsuario; filtramos en cliente.
     return this.oHttp.get<IPage<ICarrito>>(url);
   }
+
+  private carritoURL = `${serverURL}/carrito`;
+
+  getById(id: number) {
+    return this.oHttp.get<ICarrito>(`${this.carritoURL}/${id}`);
+  }
 }
