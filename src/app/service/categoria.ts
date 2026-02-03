@@ -45,4 +45,8 @@ export class CategoriaService {
       serverURL + `/categoria?page=${page}&size=${rpp}&sort=${order},${direction}`
     );
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/categoria/count');
+  }
 }

@@ -23,4 +23,8 @@ export class ClubService {
       `${this.url}?page=${page}&size=${size}&sort=${sort},${direction}`
     );
   }
+
+  count(): Observable<number> {
+    return this.http.get<number>(`${this.url}/count`);
+  }
 }

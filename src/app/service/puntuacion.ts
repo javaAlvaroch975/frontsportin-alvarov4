@@ -74,4 +74,8 @@ export class PuntuacionService {
   //   despublicar(id: number): Observable<number> {
   //     return this.oHttp.put<number>(serverURL + '/puntuacion/despublicar/' + id, {});
   //   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/puntuacion/count');
+  }
 }

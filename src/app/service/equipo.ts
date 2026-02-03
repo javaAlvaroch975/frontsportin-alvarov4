@@ -61,4 +61,8 @@ export class EquipoService {
   // empty(): Observable<number> {
   //   return this.oHttp.delete<number>(serverURL + '/equipo/empty');
   // }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/equipo/count');
+  }
 }

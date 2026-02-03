@@ -36,4 +36,8 @@ export class CarritoService {
     // Nota: el backend no filtra por idArticulo/idUsuario; filtramos en cliente.
     return this.oHttp.get<IPage<ICarrito>>(url);
   }
+  
+  count(): Observable<number> {
+    return this.oHttp.get<number>(`${serverURL}/carrito/count`);
+  }
 }

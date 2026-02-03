@@ -43,4 +43,8 @@ export class PagoService {
     console.log('URL sin filtros:', url);
     return this.http.get<IPage<IPago>>(url);
   }
+
+  count(): Observable<number> {
+    return this.http.get<number>(serverURL + '/pago/count');
+  }
 }

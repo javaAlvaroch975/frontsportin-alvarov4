@@ -61,4 +61,8 @@ export class CuotaService {
   // empty(): Observable<number> {
   //   return this.oHttp.delete<number>(serverURL + '/cuota/empty');
   // }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/cuota/count');
+  }
 }

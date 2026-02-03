@@ -60,4 +60,8 @@ export class UsuarioService {
   get(id: number): Observable<IUsuario> {
     return this.oHttp.get<IUsuario>(`${serverURL}/usuario/${id}`);
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(`${serverURL}/usuario/count`);
+  }
 }

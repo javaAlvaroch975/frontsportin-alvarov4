@@ -69,4 +69,8 @@ export class JugadorService {
   // empty(): Observable<number> {
   //   return this.http.delete<number>(serverURL + '/jugador/empty');
   // }
+
+  count(): Observable<number> {
+    return this.http.get<number>(serverURL + '/jugador/count');
+  }
 }

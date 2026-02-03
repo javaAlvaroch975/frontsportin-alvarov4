@@ -69,4 +69,8 @@ export class ArticuloService {
   //   despublicar(id: number): Observable<number> {
   //     return this.oHttp.put<number>(serverURL + '/articulo/despublicar/' + id, {});
   //   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/articulo/count');
+  }
 }

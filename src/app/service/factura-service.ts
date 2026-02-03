@@ -37,4 +37,8 @@ getPage(
       serverURL + `/factura?page=${page}&size=${rpp}&sort=${order},${direction}`
     );
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/factura/count');
+  }
 }

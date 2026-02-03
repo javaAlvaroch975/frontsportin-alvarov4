@@ -41,4 +41,8 @@ export class LigaService {
       serverURL + `/liga?page=${page}&size=${rpp}&sort=${order},${direction}`,
     );
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/liga/count');
+  }
 }

@@ -66,4 +66,8 @@ export class ComentarioartService {
             serverURL + `/comentarioart/${id}`
         );
     }
+
+    count(): Observable<number> {
+        return this.oHttp.get<number>(serverURL + '/comentarioart/count');
+    }
 }

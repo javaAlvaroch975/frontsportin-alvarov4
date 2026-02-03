@@ -46,4 +46,8 @@ export class ComentarioService {
 
         return this.oHttp.get<IPage<IComentario>>(this.URL, { params });
     }
+
+    count(): Observable<number> {
+        return this.oHttp.get<number>(`${serverURL}/comentario/count`);
+    }
 }

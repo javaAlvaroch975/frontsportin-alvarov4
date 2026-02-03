@@ -55,4 +55,8 @@ export class NoticiaService {
       serverURL + `/noticia/${id}`
     );
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/noticia/count');
+  }
 }

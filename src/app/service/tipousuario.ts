@@ -11,4 +11,8 @@ export class TipousuarioService {
     getAll(): Observable<ITipousuario[]> {
         return this.httpClient.get<ITipousuario[]>(`${serverURL}/tipousuario`);
     }
+
+    count(): Observable<number> {
+        return this.httpClient.get<number>(`${serverURL}/tipousuario/count`);
+    }
 }

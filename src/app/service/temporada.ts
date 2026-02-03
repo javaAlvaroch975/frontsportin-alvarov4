@@ -46,4 +46,8 @@ export class TemporadaService {
       serverURL + `/temporada?page=${page}&size=${rpp}&sort=${sortParams}`,
     );
   }
+
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/temporada/count');
+  }
 }

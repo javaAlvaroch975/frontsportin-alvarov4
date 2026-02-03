@@ -51,4 +51,7 @@ export class RolusuarioService {
   //   return this.oHttp.get<IRolusuario>(serverURL + '/rolusuario/' + id);
   // }
 
+  count(): Observable<number> {
+    return this.oHttp.get<number>(serverURL + '/rolusuario/count');
+  }
 }
