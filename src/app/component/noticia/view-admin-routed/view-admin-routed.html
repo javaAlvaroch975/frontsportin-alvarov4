@@ -1,0 +1,48 @@
+<div class="container m-5 post-view">
+
+    <!-- Noticia -->
+    @if (oNoticiaModel; as noticia) {
+        <article class="post-card p-5 border rounded shadow-sm">
+
+            <!-- ID -->
+            <section class="mb-3">
+                <strong>ID:</strong>
+                <span>{{ noticia.id }}</span>
+            </section>
+
+            <!-- Título -->
+            <section class="mb-3">
+                <strong>Título:</strong>
+                <span>{{ noticia.titulo }}</span>
+            </section>
+
+            <!-- Contenido -->
+            <section class="mb-3">
+                <strong>Contenido:</strong>
+                <p>{{ noticia.contenido }}</p>
+            </section>
+
+            <!-- Fecha -->
+            <section class="mb-3">
+                <strong>Fecha:</strong>
+                <span>{{ noticia.fecha | date:'dd/MM/yyyy' }}</span>
+            </section>
+
+            <!-- Imagen -->
+            @if (oNoticiaModel.imagen) {
+                <section class="mb-3">
+                    <strong>Imagen:</strong>
+                    <div>
+                        <img [src]="noticia.imagen" alt="Imagen_Noticia" class="img-fluid rounded" />
+                    </div>
+                </section>
+            }
+
+            <!-- Club -->
+            <section class="mb-3">
+                <strong>Club:</strong>
+                <span>{{ noticia.club?.nombre }}</span>
+            </section>
+        </article>
+    }
+</div>

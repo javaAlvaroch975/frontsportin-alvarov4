@@ -49,4 +49,10 @@ export class NoticiaService {
       serverURL + `/noticia?page=${page}&size=${rpp}&sort=${order},${direction}`,
     );
   }
+
+  getById(id: number): Observable<noticiaModel> {
+    return this.oHttp.get<noticiaModel>(
+      serverURL + `/noticia/${id}`
+    );
+  }
 }
