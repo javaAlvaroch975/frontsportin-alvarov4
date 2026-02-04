@@ -25,9 +25,11 @@ import { ComentarioPlistAdminRouted } from './component/comentario/plist-admin-r
 import { ComentarioViewRouted } from './component/comentario/view-routed/comentario-view';
 import { PagoPlistComponent } from './component/pago/plist-admin-routed/pago-plist';
 import { PuntuacionPlistAdminRouted } from './component/puntuacion/plist-admin-routed/puntuacion-plist';
+import { NoticiaViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { FacturaViewAdminRouted } from './component/factura/view-admin-routed/factura-view';
 import { ViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { ComentarioartPlistAdminRouted } from './component/comentarioart/comentarioart-plist';
+import { CarritoViewAdminRouted } from './component/carrito/view-admin-routed/view-admin-routed';
 
 
 export const routes: Routes = [
@@ -67,7 +69,7 @@ export const routes: Routes = [
     { path: 'jugador/equipo/:id_equipo', component: JugadorPlisComponent},
     { path: 'noticia', component: NoticiaPlistAdminRouted},
     { path: 'noticia/club/:id_club', component: NoticiaPlistAdminRouted},
-    { path: 'noticia/view/:id', component: ViewAdminRouted },
+    { path: 'noticia/view/:id', component: NoticiaViewAdminRouted },
     { path: 'club/plist', component: ClubPlistAdminRouted},
     { path: 'club', component: ClubPlistAdminRouted},
     { path: 'cuota', component: CuotaPlistAdminRouted},
@@ -79,6 +81,7 @@ export const routes: Routes = [
     { path: 'carrito', component: CarritoPlistAdminRouted },
     { path: 'carrito/usuario/:id_usuario', component: CarritoPlistAdminRouted },
     { path: 'carrito/articulo/:id_articulo', component: CarritoPlistAdminRouted },
+    { path: 'carrito/view/:id', component: CarritoViewAdminRouted },
     { path: 'comentario', component: ComentarioPlistAdminRouted },
     { path: 'comentario/usuario/:id_usuario', component: ComentarioPlistAdminRouted},
     { path: 'comentario/noticia/:id_noticia', component: ComentarioPlistAdminRouted},
