@@ -34,6 +34,7 @@ import { ClubViewAdminRouted } from './component/club/view-admin-routed/club-vie
 import { CuotaViewAdminRouted } from './component/cuota/view-admin-routed/cuota-view';
 import { TipousuarioViewAdminRouted } from './component/tipousario/view-admin-routed/tipousuario-view';
 import { CarritoViewAdminRouted } from './component/carrito/view-admin-routed/view-admin-routed';
+import { CategoriaViewAdminRouted } from './component/categoria/view-admin-routed/categoria-view';
 import { LigaViewRouted } from './component/liga/view-routed/liga-view';
 import { ComentarioartViewRouted } from './component/comentarioart/view-routed/comentarioart-view';
 
@@ -58,6 +59,7 @@ export const routes: Routes = [
     { path: 'articulo/view/:id', component: ArticuloViewAdminRouted},
     { path: 'categoria', component: CategoriaPlistAdminRouted},
     { path: 'categoria/temporada/:id_temporada', component: CategoriaPlistAdminRouted},
+    { path: 'categoria/view/:id', component: CategoriaViewAdminRouted },
     { path: 'partido', component: PartidoPlistAdminRouted},
     { path: 'partido/liga/:id_liga', component: PartidoPlistAdminRouted},
     { path: 'factura', component: FacturaPlistAdminRouted },
