@@ -129,8 +129,8 @@ export class CategoriaPlistAdminRouted {
         this.numRpp(),
         this.orderField(),
         this.orderDirection(),
-        '', // No enviar el filtro de nombre al backend
-        0,  // No enviar el filtro de temporada al backend
+        this.nombre(),
+        this.temporada(),
       )
       .subscribe({
         next: (data: IPage<ICategoria>) => {

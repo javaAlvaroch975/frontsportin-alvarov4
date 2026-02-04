@@ -1,7 +1,7 @@
 import { Component, signal, computed } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { noticiaModel } from '../../../model/noticia';
+import { INoticia } from '../../../model/noticia';
 import { IPage } from '../../../model/plist';
 import { NoticiaService } from '../../../service/noticia';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -21,7 +21,7 @@ import { debounceTimeSearch } from '../../../environment/environment';
   styleUrl: './noticia-plist.css',
 })
 export class NoticiaPlistAdminRouted {
-  oPage = signal<IPage<noticiaModel> | null>(null);
+  oPage = signal<IPage<INoticia> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);
 
@@ -91,7 +91,7 @@ export class NoticiaPlistAdminRouted {
         this.club(),
       )
       .subscribe({
-        next: (data: IPage<noticiaModel>) => {
+        next: (data: IPage<INoticia>) => {
           this.oPage.set(data);
           if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
             this.numPage.set(data.totalPages - 1);

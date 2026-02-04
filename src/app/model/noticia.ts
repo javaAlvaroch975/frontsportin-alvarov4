@@ -1,17 +1,15 @@
-export interface noticiaModel{
+import { IClub } from "./club";
+
+
+export interface INoticia{
   id: number;
   titulo: string;
   contenido: string;
   fecha: Date;
   imagen: any | null;
-  club: IClubModel;
+  club: IClub;
   comentarios: number;
   puntuaciones: number | null;
 }
 
-// Temporales
 
-export interface IClubModel {
-  id: number;
-  nombre?: string;
-}

@@ -1,9 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { serverURL } from '../environment/environment';
 import { IPage } from '../model/plist';
-import { noticiaModel } from '../model/noticia';
 import { Observable } from 'rxjs';
+import { INoticia } from '../model/noticia';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class NoticiaService {
     direction: string = '',
     titulo: string = '',
     id_club: number = 0,
-  ): Observable<IPage<noticiaModel>> {
+  ): Observable<IPage<INoticia>> {
     if (order === '') {
       order = 'id';
     }
@@ -30,7 +30,7 @@ export class NoticiaService {
     
     // Filtro por club.id
     if (id_club > 0) {
-      return this.oHttp.get<IPage<noticiaModel>>(
+      return this.oHttp.get<IPage<INoticia>>(
         serverURL +
           `/noticia?page=${page}&size=${rpp}&sort=${order},${direction}&id_club=${id_club}`,
       );
@@ -38,20 +38,20 @@ export class NoticiaService {
     
     // Búsqueda por título o contenido (usa el mismo valor para ambos campos)
     if (titulo && titulo.length > 0) {
-      return this.oHttp.get<IPage<noticiaModel>>(
+      return this.oHttp.get<IPage<INoticia>>(
         serverURL +
           `/noticia?page=${page}&size=${rpp}&sort=${order},${direction}&titulo=${titulo}&contenido=${titulo}`,
       );
     }
     
     // Sin filtros
-    return this.oHttp.get<IPage<noticiaModel>>(
+    return this.oHttp.get<IPage<INoticia>>(
       serverURL + `/noticia?page=${page}&size=${rpp}&sort=${order},${direction}`,
     );
   }
 
-  getById(id: number): Observable<noticiaModel> {
-    return this.oHttp.get<noticiaModel>(
+  getById(id: number): Observable<INoticia> {
+    return this.oHttp.get<INoticia>(
       serverURL + `/noticia/${id}`
     );
   }

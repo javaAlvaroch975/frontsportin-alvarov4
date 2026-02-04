@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { noticiaModel } from '../../../model/noticia';
+import { INoticia } from '../../../model/noticia';
 import { NoticiaService } from '../../../service/noticia';
 
 @Component({
@@ -12,7 +12,7 @@ import { NoticiaService } from '../../../service/noticia';
 })
 export class ViewAdminRouted implements OnInit {
 
-  oNoticiaModel: noticiaModel | null = null;
+  oNoticiaModel: INoticia | null = null;
 
   constructor(private route: ActivatedRoute, private noticiaService: NoticiaService) {
     

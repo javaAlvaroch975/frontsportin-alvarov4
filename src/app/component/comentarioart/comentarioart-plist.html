@@ -63,13 +63,13 @@
           <td class="text-center">{{ comentario.id }}</td>
           <td>{{ comentario.contenido }}</td>
           <td class="text-center">
-            <a [routerLink]="['/comentarioart/articulo', comentario.idArticulo]">
-              {{ comentario.idArticulo }}
+            <a [routerLink]="['/articulo/view', comentario.idArticulo]">
+              {{ comentario.articulo?.descripcion || 'Sin artículo' }} ({{ comentario.idArticulo }})
             </a>
           </td>
           <td class="text-center">
-            <a [routerLink]="['/comentarioart/usuario', comentario.idUsuario]">
-              {{ comentario.idUsuario }}
+            <a [routerLink]="['/usuario/view', comentario.idUsuario]">
+              {{ comentario.usuario?.nombre }} {{ comentario.usuario?.apellido1 }} {{ comentario.usuario?.apellido2 }} ({{ comentario.idUsuario }})
             </a>
           </td>
           <td class="text-center">

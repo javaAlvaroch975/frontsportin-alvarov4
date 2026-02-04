@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ICategoria, ITemporada } from '../model/categoria';
+import { ICategoria } from '../model/categoria';
 import { Observable } from 'rxjs';
 import { IPage } from '../model/plist';
 import { HttpClient } from '@angular/common/http';

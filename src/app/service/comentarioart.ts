@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { comentarioartModel } from '../model/comentarioart';
+import { IComentarioart } from '../model/comentarioart';
 import { IPage } from '../model/plist';
 import { serverURL } from '../environment/environment';
 
@@ -10,8 +10,7 @@ import { serverURL } from '../environment/environment';
 })
 export class ComentarioartService {
 
-    constructor(private oHttp: HttpClient) {
-        
+    constructor(private oHttp: HttpClient) {        
     }
 
     getPage(
@@ -22,7 +21,7 @@ export class ComentarioartService {
         contenido: string = '',
         id_articulo: number = 0,
         id_usuario: number = 0,
-    ): Observable<IPage<comentarioartModel>> {
+    ): Observable<IPage<IComentarioart>> {
         if (order === '') {
             order = 'id';
         }
@@ -33,7 +32,7 @@ export class ComentarioartService {
         
         // Filtrar por el ID de ARTICULO
         if (id_articulo > 0) {
-            return this.oHttp.get<IPage<comentarioartModel>>(
+            return this.oHttp.get<IPage<IComentarioart>>(
                 serverURL +
                 `/comentarioart?page=${page}&size=${rpp}&sort=${order},${direction}&id_articulo=${id_articulo}`,
             );
@@ -41,7 +40,7 @@ export class ComentarioartService {
 
         // Filtrar por el ID de USUARIO
         if (id_usuario > 0) {
-            return this.oHttp.get<IPage<comentarioartModel>>(
+            return this.oHttp.get<IPage<IComentarioart>>(
                 serverURL +
                 `/comentarioart?page=${page}&size=${rpp}&sort=${order},${direction}&id_usuario=${id_usuario}`,
             );
@@ -49,20 +48,20 @@ export class ComentarioartService {
         
         // Búsqueda por CONTENIDO
         if (contenido && contenido.length > 0) {
-        return this.oHttp.get<IPage<comentarioartModel>>(
+        return this.oHttp.get<IPage<IComentarioart>>(
             serverURL +
             `/comentarioart?page=${page}&size=${rpp}&sort=${order},${direction}&contenido=${contenido}`,
         );
         }
         
         // Sin filtros
-        return this.oHttp.get<IPage<comentarioartModel>>(
+        return this.oHttp.get<IPage<IComentarioart>>(
             serverURL + `/comentarioart?page=${page}&size=${rpp}&sort=${order},${direction}`,
         );
     }
 
-    getById(id: number): Observable<comentarioartModel> {
-        return this.oHttp.get<comentarioartModel>(
+    getById(id: number): Observable<IComentarioart> {
+        return this.oHttp.get<IComentarioart>(
             serverURL + `/comentarioart/${id}`
         );
     }

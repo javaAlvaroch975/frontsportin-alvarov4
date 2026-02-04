@@ -1,9 +1,10 @@
-﻿import { noticiaModel } from "./noticia"
+﻿
+import { INoticia } from "./noticia"
 import { IUsuario } from "./usuario"
 
 export interface IPuntuacion {
   id: number
   puntuacion: number
-  noticia: noticiaModel
+  noticia: INoticia
   usuario: IUsuario
 }

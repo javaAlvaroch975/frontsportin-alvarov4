@@ -179,7 +179,7 @@
           <td>
             @if (jugador.equipo) {
             <a [routerLink]="['/equipo', '/view', jugador.equipo.id]">
-              {{ jugador.equipo.nombre | trim: 20 }}
+              {{ (jugador.equipo.nombre || '') | trim: 20 }}
               {{ ' (' + jugador.equipo.id + ')' }}
             </a>
             <!-- Botón alineado a la derecha para filtrar equipo -->

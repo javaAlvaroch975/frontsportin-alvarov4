@@ -1,3 +1,5 @@
+import { ILiga } from "./liga";
+
 export interface IPartido {
     id: number;
     rival: string;
@@ -6,8 +8,3 @@ export interface IPartido {
     resultado: string;
 }
 
-export interface ILiga{
-    id: number;
-    nombre: string;
-    id_equipo?: number;
-}

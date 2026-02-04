@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { serverURL } from '../environment/environment';
-import { IJugador, IUsuario, IEquipo } from '../model/jugador';
+import { IJugador } from '../model/jugador';
 import { IPage } from '../model/plist';
 
 @Injectable({

@@ -1,3 +1,5 @@
+import { IClub } from "./club"
+
 export interface ITemporada {
     id: number
     descripcion: string
@@ -5,11 +7,3 @@ export interface ITemporada {
     categorias: number
 }
 
-export interface IClub {
-    id: number
-    nombre: string
-    direccion: string
-    telefono: string
-    fecha_alta: string
-    imagen: string
-}

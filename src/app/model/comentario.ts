@@ -1,4 +1,4 @@
-import { IClub } from './club';
+import { INoticia } from './noticia';
 import { IUsuario } from './usuario';
 
 export interface IComentario {
@@ -8,13 +8,3 @@ export interface IComentario {
     usuario: IUsuario,
 }
 
-interface INoticia {
-    id: number,
-    titulo: string,
-    contenido: string,
-    fecha: Date,
-    imagen: string | null,
-    club: IClub,
-    comentarios: number,
-    puntuaciones: number,
-}

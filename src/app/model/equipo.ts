@@ -1,18 +1,13 @@
-export interface IPersonaRef {
-  id?: number;
-  nombre?: string;
-  apellido1?: string;
-}
 
-export interface ICategoriaRef {
-  id?: number;
-  nombre?: string;
-}
+import { ICategoria } from "./categoria";
+import { IUsuario } from "./usuario";
 
 export interface IEquipo {
   id?: number;
   nombre?: string;
-  categoria?: ICategoriaRef;
-  entrenador?: IPersonaRef;
+  categoria?: ICategoria;
+  entrenador?: IUsuario;
   jugadores?: number;
+  cuotas?: number;
+  ligas?: number;
 }

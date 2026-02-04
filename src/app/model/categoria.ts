@@ -1,3 +1,5 @@
+import { ITemporada } from "./temporada"
+
 export interface ICategoria {
   id: number
   nombre: string
@@ -5,7 +7,3 @@ export interface ICategoria {
   equipos: number
 }
 
-export interface ITemporada {
-  id: number
-  descripcion?: string
-}

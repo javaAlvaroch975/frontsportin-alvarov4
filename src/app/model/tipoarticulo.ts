@@ -1,3 +1,5 @@
+import { IClub } from "./club"
+
 export interface ITipoarticulo {
   id: number
   descripcion: string
@@ -5,15 +7,4 @@ export interface ITipoarticulo {
   articulos: number
 }
 
-export interface IClub {
-  id: number
-  nombre: string
-  direccion: string
-  telefono: string
-  fechaAlta: string
-  imagen: any
-  temporadas: number
-  noticias: number
-  tipoarticulos: number
-  usuarios: number
-}
+

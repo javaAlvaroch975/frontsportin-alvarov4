@@ -1,3 +1,5 @@
+import { IEquipo } from "./equipo";
+
 export interface ILiga {
     id: number;
     nombre: string;
@@ -5,7 +7,3 @@ export interface ILiga {
     partidos: number;
 }
 
-export interface IEquipo {
-    id: number;
-    nombre?: string;
-}

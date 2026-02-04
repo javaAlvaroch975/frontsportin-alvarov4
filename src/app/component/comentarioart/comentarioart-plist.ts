@@ -9,17 +9,17 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { debounceTimeSearch } from '../../environment/environment';
 import { ComentarioartService } from '../../service/comentarioart';
-import { comentarioartModel } from '../../model/comentarioart';
+import { IComentarioart } from '../../model/comentarioart';
 
 @Component({
   selector: 'app-comentarioart-plist',
   standalone: true,
-  imports: [Paginacion, BotoneraRpp, TrimPipe, RouterLink],
+  imports: [Paginacion, BotoneraRpp, RouterLink],
   templateUrl: './comentarioart-plist.html',
   styleUrl: './comentarioart-plist.css',
 })
 export class ComentarioartPlistAdminRouted {
-  oPage = signal<IPage<comentarioartModel> | null>(null);
+  oPage = signal<IPage<IComentarioart> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);
   rellenaCantidad = signal<number>(10);
@@ -105,7 +105,7 @@ export class ComentarioartPlistAdminRouted {
         this.usuario(),
       )
       .subscribe({
-        next: (data: IPage<comentarioartModel>) => {
+        next: (data: IPage<IComentarioart>) => {
           this.oPage.set(data);
           if (this.numPage() > 0 && this.numPage() >= data.totalPages) {
             this.numPage.set(data.totalPages - 1);
