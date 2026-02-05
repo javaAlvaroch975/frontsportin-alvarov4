@@ -127,7 +127,7 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Pagos</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/pago/jugador/', oPago()?.jugador?.usuario?.id]">
+                      <a class="text-decoration-none" [routerLink]="['/pago/jugador/', oPago()?.jugador?.id]">
                       {{ oPago()?.jugador?.pagos }}
                       </a>
                     </div>
@@ -189,7 +189,7 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Pagos</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/pago/cuota/', oPago()?.jugador?.usuario?.tipousuario?.id]">
+                      <a class="text-decoration-none" [routerLink]="['/pago/cuota/', oPago()?.cuota?.id]">
                       {{ oPago()?.cuota?.pagos }}
                       </a>
                     </div>
