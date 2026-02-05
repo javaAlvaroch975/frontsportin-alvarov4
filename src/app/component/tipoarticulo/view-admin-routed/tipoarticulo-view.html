@@ -177,7 +177,7 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Tipos de Artículo</div>
                     <div class="fw-semibold">
-                      @if (oTipoarticulo()?.club?.tipoarticulos && oTipoarticulo()!.club!.tipoarticulos > 0) {
+                      @if (oTipoarticulo()?.club?.tipoarticulos && oTipoarticulo()!.club!.tipoarticulos >= 2) {
                         <a class="text-decoration-none" [routerLink]="['/tipoarticulo/club/', oTipoarticulo()?.club?.id]">
                           {{ oTipoarticulo()?.club?.tipoarticulos }}
                         </a>
