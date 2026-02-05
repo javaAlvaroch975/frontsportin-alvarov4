@@ -5,46 +5,32 @@ import { CommonModule } from '@angular/common';
 import { DatetimePipe } from '../../../pipe/datetime-pipe';
 import { PagoService } from '../../../service/pago';
 import { IPago } from '../../../model/pago';
+import { PagoDetailAdminUnrouted } from "../detail-admin-unrouted/pago-detail";
 
 
 @Component({
   selector: 'app-pago-view',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, PagoDetailAdminUnrouted],
   templateUrl: './pago-view.html',
   styleUrl: './pago-view.css',
 })
 export class PagoViewAdminRouted implements OnInit {
-  private route = inject(ActivatedRoute);
-  private oPagoService = inject(PagoService);
+
+  private route = inject(ActivatedRoute);  
   //private snackBar = inject(MatSnackBar);
 
   oPago = signal<IPago | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
+  id_pago = signal<number>(0);
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
-    if (isNaN(id)) {
+    this.id_pago.set(idParam ? Number(idParam) : NaN);
+    if (isNaN(this.id_pago())) {
       this.error.set('ID no válido');
       this.loading.set(false);
       return;
-    }
-    this.load(id);
-  }
-
-  load(id: number) {
-    this.oPagoService.get(id).subscribe({
-      next: (data: IPago) => {
-        this.oPago.set(data);
-        this.loading.set(false);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error.set('Error cargando el usuario');
-        this.loading.set(false);
-        //this.snackBar.open('Error cargando el usuario', 'Cerrar', { duration: 4000 });
-        console.error(err);
-      },
-    });
+    }    
   }
 }
