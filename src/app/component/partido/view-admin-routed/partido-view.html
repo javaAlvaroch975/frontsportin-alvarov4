@@ -106,7 +106,9 @@
                 <div class="border rounded p-2 bg-white">
                   <div class="text-muted small text-uppercase">Partidos Liga</div>
                   <div class="fw-bold">
-                    {{ oPartido()?.liga?.partidos || 0 }}
+                    <a class="text-decoration-none" [routerLink]="['/partido/liga', oPartido()?.liga?.id]">
+                      {{ oPartido()?.liga?.partidos || 0 }}
+                    </a>
                   </div>
                 </div>
               </div>

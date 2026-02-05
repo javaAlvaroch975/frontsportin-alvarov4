@@ -80,9 +80,13 @@
                 <div class="border rounded p-2 bg-white">
                   <div class="text-muted small text-uppercase">Artículos</div>
                   <div class="fw-bold">
-                     <a class="text-decoration-none" [routerLink]="['/articulo/tipoarticulo/', oTipoarticulo()?.id]">
-                    {{ oTipoarticulo()?.articulos }}
-                    </a>
+                    @if (oTipoarticulo()?.articulos && oTipoarticulo()!.articulos > 0) {
+                      <a class="text-decoration-none" [routerLink]="['/articulo/tipoarticulo/', oTipoarticulo()?.id]">
+                        {{ oTipoarticulo()?.articulos }}
+                      </a>
+                    } @else {
+                      {{ oTipoarticulo()?.articulos }}
+                    }
                   </div>
                 </div>
               </div>
@@ -131,9 +135,13 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Usuarios</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/usuario/club/', oTipoarticulo()?.club?.id]">
+                      @if (oTipoarticulo()?.club?.usuarios && oTipoarticulo()!.club!.usuarios > 0) {
+                        <a class="text-decoration-none" [routerLink]="['/usuario/club/', oTipoarticulo()?.club?.id]">
+                          {{ oTipoarticulo()?.club?.usuarios }}
+                        </a>
+                      } @else {
                         {{ oTipoarticulo()?.club?.usuarios }}
-                      </a>
+                      }
                     </div>
                   </div>
                 </div>
@@ -141,9 +149,13 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Temporadas</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/temporada/club/', oTipoarticulo()?.club?.id]">
+                      @if (oTipoarticulo()?.club?.temporadas && oTipoarticulo()!.club!.temporadas > 0) {
+                        <a class="text-decoration-none" [routerLink]="['/temporada/club/', oTipoarticulo()?.club?.id]">
+                          {{ oTipoarticulo()?.club?.temporadas }}
+                        </a>
+                      } @else {
                         {{ oTipoarticulo()?.club?.temporadas }}
-                      </a>
+                      }
                     </div>
                   </div>
                 </div>
@@ -151,9 +163,13 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Noticias</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/noticia/club/', oTipoarticulo()?.club?.id]">
+                      @if (oTipoarticulo()?.club?.noticias && oTipoarticulo()!.club!.noticias > 0) {
+                        <a class="text-decoration-none" [routerLink]="['/noticia/club/', oTipoarticulo()?.club?.id]">
+                          {{ oTipoarticulo()?.club?.noticias }}
+                        </a>
+                      } @else {
                         {{ oTipoarticulo()?.club?.noticias }}
-                      </a>
+                      }
                     </div>
                   </div>
                 </div>
@@ -161,9 +177,13 @@
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Tipos de Artículo</div>
                     <div class="fw-semibold">
-                      <a class="text-decoration-none" [routerLink]="['/tipoarticulo/club/', oTipoarticulo()?.club?.id]">
+                      @if (oTipoarticulo()?.club?.tipoarticulos && oTipoarticulo()!.club!.tipoarticulos >= 2) {
+                        <a class="text-decoration-none" [routerLink]="['/tipoarticulo/club/', oTipoarticulo()?.club?.id]">
+                          {{ oTipoarticulo()?.club?.tipoarticulos }}
+                        </a>
+                      } @else {
                         {{ oTipoarticulo()?.club?.tipoarticulos }}
-                      </a>
+                      }
                     </div>
                   </div>
                 </div>

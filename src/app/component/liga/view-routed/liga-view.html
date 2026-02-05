@@ -59,9 +59,13 @@
                 <div class="col-7 fw-semibold small">{{ oLiga()?.nombre }}</div>
                 <div class="col-5 text-muted small text-uppercase">Partidos</div>
                 <div class="col-7 fw-semibold small">
-                  <a [routerLink]="['/partido/liga', oLiga()?.id]" title="Ver partidos de la liga">
-                    {{ oLiga()?.partidos }}
-                  </a>
+                  @if ((oLiga()?.partidos ?? 0) > 0) {
+                    <a [routerLink]="['/partido/liga', oLiga()?.id]" title="Ver partidos de la liga">
+                      {{ oLiga()?.partidos }}
+                    </a>
+                  } @else {
+                    {{ oLiga()?.partidos || 0 }}
+                  }
                 </div>
               </div>
             </div>
@@ -77,31 +81,13 @@
               <div class="col-5 text-muted small text-uppercase">Equipo</div>
               <div class="col-7 fw-semibold small">
                 @if (oLiga()?.equipo) {
-                  <!-- Mostrar nombre e id del equipo como enlace al view del equipo -->
                   <div class="d-inline-block mb-1">
                     <a
                       [routerLink]="['/equipo/view', oLiga()?.equipo?.id || equipoId()]"
                       title="Ver equipo"
                     >
-                      {{ oLiga()?.equipo?.nombre }} ({{
-                        oLiga()?.equipo?.id || equipoId() || 'Sin referencia'
-                      }})
+                      {{ oLiga()?.equipo?.nombre }} ({{ oLiga()?.equipo?.id || equipoId() || 'Sin referencia' }})
                     </a>
-                  </div>
-                  <div class="small text-muted">
-                    Categoria:
-                    <span class="fw-semibold">{{ oLiga()?.equipo?.categoria?.nombre || '-' }}</span>
-                  </div>
-                  <div class="small text-muted">
-                    Entrenador:
-                    <span class="fw-semibold"
-                      >{{ oLiga()?.equipo?.entrenador?.nombre }}
-                      {{ oLiga()?.equipo?.entrenador?.apellido1 }}</span
-                    >
-                  </div>
-                  <div class="small text-muted">
-                    Jugadores:
-                    <span class="fw-semibold">{{ oLiga()?.equipo?.jugadores || 0 }}</span>
                   </div>
                 } @else {
                   Sin equipo
@@ -146,7 +132,15 @@
                 <div class="col-sm-6 col-lg-3">
                   <div class="border rounded p-2 bg-white">
                     <div class="text-muted small text-uppercase">Jugadores</div>
-                    <div class="fw-semibold">{{ oLiga()?.equipo?.jugadores || 0 }}</div>
+                      <div class="fw-semibold">
+                        @if ((oLiga()?.equipo?.jugadores ?? 0) > 0 && (equipoId() ?? 0) > 0) {
+                          <a [routerLink]="['/jugador/equipo', equipoId()]" title="Ver jugadores del equipo">
+                            {{ oLiga()?.equipo?.jugadores }}
+                          </a>
+                        } @else {
+                          {{ oLiga()?.equipo?.jugadores || 0 }}
+                        }
+                      </div>
                   </div>
                 </div>
               </div>

@@ -32,6 +32,10 @@ export class CompraService {
     return this.oHttp.get<IPage<ICompra>>(serverURL + `/compra` + params);
   }
 
+  get(id: number): Observable<ICompra> {
+    return this.oHttp.get<ICompra>(`${serverURL}/compra/${id}`);
+  }
+
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/compra/count');
   }

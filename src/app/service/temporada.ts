@@ -11,6 +11,10 @@ import { serverURL } from '../environment/environment';
 export class TemporadaService {
   constructor(private oHttp: HttpClient) {}
 
+  get(id: number): Observable<ITemporada> {
+    return this.oHttp.get<ITemporada>(`${serverURL}/temporada/${id}`);
+  }
+
   getPage(
     page: number,
     rpp: number,

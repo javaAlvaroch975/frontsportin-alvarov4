@@ -29,11 +29,17 @@
                 </tr>
                 <tr>
                   <th>Usuarios</th>
-                  <td>
-                    <a [routerLink]="['/usuario/tipousuario', oTipousuario()?.id]">{{
-                      oTipousuario()?.usuarios
-                    }}</a>
-                  </td>
+                  @if (oTipousuario()?.usuarios === 0) {
+                    <td>
+                      {{ oTipousuario()?.usuarios }}
+                    </td>
+                  } @else {
+                    <td>
+                      <a [routerLink]="['/usuario/tipousuario', oTipousuario()?.id]">{{
+                        oTipousuario()?.usuarios
+                      }}</a>
+                    </td>
+                  }
                 </tr>
               </tbody>
             </table>

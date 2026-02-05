@@ -44,6 +44,10 @@ export class PagoService {
     return this.http.get<IPage<IPago>>(url);
   }
 
+  get(id: number): Observable<IPago> {
+        return this.http.get<IPago>(`${serverURL}/pago/${id}`);
+      }
+
   count(): Observable<number> {
     return this.http.get<number>(serverURL + '/pago/count');
   }

@@ -10,6 +10,7 @@ import { PartidoPlistAdminRouted } from './component/partido/plist-admin-routed/
 import { PartidoViewAdminRouted } from './component/partido/view-admin-routed/partido-view';
 import { FacturaPlistAdminRouted } from './component/factura/plist-admin-routed/factura-plist';
 import { CompraPlistAdminRouted } from './component/compra/plist-admin-routed/compra-plist';
+import { CompraViewRouted } from './component/compra/view-routed/compra-view';
 import { RolusuarioPlist } from './component/rolusuario/plist-admin-routed/rolusuario-plist';
 import { TipoarticuloPlistAdminRouted } from './component/tipoarticulo/plist-admin-routed/tipoarticulo-plist';
 import { TipoarticuloViewAdminRouted } from './component/tipoarticulo/view-admin-routed/tipoarticulo-view';
@@ -28,9 +29,12 @@ import { ComentarioPlistAdminRouted } from './component/comentario/plist-admin-r
 import { ComentarioViewRouted } from './component/comentario/view-routed/comentario-view';
 import { PagoPlistComponent } from './component/pago/plist-admin-routed/pago-plist';
 import { PuntuacionPlistAdminRouted } from './component/puntuacion/plist-admin-routed/puntuacion-plist';
+import { PuntuacionViewRouted } from './component/puntuacion/view-routed/puntuacion-view';
 import { NoticiaViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { FacturaViewAdminRouted } from './component/factura/view-admin-routed/factura-view';
 import { ComentarioartPlistAdminRouted } from './component/comentarioart/comentarioart-plist';
+import { TemporadaViewAdminRouted } from './component/temporada/view-admin-routed/temporada-view';
+import { PagoViewAdminRouted } from './component/pago/view-admin-routed/pago-view';
 import { ClubViewAdminRouted } from './component/club/view-admin-routed/club-view';
 import { CuotaViewAdminRouted } from './component/cuota/view-admin-routed/cuota-view';
 import { TipousuarioViewAdminRouted } from './component/tipousario/view-admin-routed/tipousuario-view';
@@ -51,6 +55,7 @@ export const routes: Routes = [
     { path: 'usuario/view/:id', component: UsuarioViewRouted},
     { path: 'temporada', component: TemporadaPlist },
     { path: 'temporada/club/:id_club', component: TemporadaPlist },
+    { path: 'temporada/view/:id', component: TemporadaViewAdminRouted },
     { path: 'liga', component: LigaPlistAdminRouted },
     { path: 'liga/view/:id', component: LigaViewRouted },
     { path: 'liga/equipo/:id_equipo', component: LigaPlistAdminRouted },
@@ -72,7 +77,8 @@ export const routes: Routes = [
     { path: 'compra', component: CompraPlistAdminRouted },
     { path: 'compra/articulo/:id_articulo', component: CompraPlistAdminRouted },
     { path: 'compra/factura/:id_factura', component: CompraPlistAdminRouted },
-    { path: 'rolusuario', component: RolusuarioPlist },
+    { path: 'compra/view/:id', component: CompraViewRouted },
+    { path: 'rolusuario', component: RolusuarioPlist },  
     { path: 'rolusuario/view/:id', component: RolusuarioViewAdminRouted},
     { path: 'tipoarticulo', component : TipoarticuloPlistAdminRouted},
     { path: 'tipoarticulo/club/:id_club', component : TipoarticuloPlistAdminRouted},
@@ -107,9 +113,11 @@ export const routes: Routes = [
     { path: 'pago', component: PagoPlistComponent},
     { path: 'pago/cuota/:id_cuota', component: PagoPlistComponent},
     { path: 'pago/jugador/:id_jugador', component: PagoPlistComponent},
+    { path: 'pago/view/:id', component: PagoViewAdminRouted},
     { path: 'puntuacion', component: PuntuacionPlistAdminRouted},
     { path: 'puntuacion/noticia/:id_noticia', component: PuntuacionPlistAdminRouted},
     { path: 'puntuacion/usuario/:id_usuario', component: PuntuacionPlistAdminRouted},
+    { path: 'puntuacion/view/:id', component: PuntuacionViewRouted},
     { path: 'comentarioart', component: ComentarioartPlistAdminRouted},
     { path: 'comentarioart/articulo/:id_articulo', component: ComentarioartPlistAdminRouted},
     { path: 'comentarioart/usuario/:id_usuario', component: ComentarioartPlistAdminRouted},
