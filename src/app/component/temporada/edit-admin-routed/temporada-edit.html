@@ -1,0 +1,83 @@
+<div class="container my-4 edit-form">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="form-card">
+        <header class="form-header mb-4">
+          <h1 class="form-title">Editar Película</h1>
+          <p class="text-muted small">Modifica los campos de la película</p>
+        </header>
+
+        @if (loading()) {
+        <div class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        }
+
+        @if (error()) {
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+        </div>
+        }
+
+        @if (!loading() && !error()) {
+
+        <form [formGroup]="temporadaForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="descripcion?.invalid && descripcion?.touched"
+              [class.is-valid]="descripcion?.valid && descripcion?.touched"
+              id="descripcion"
+              formControlName="descripcion"
+              placeholder="Introduce el nombre de la nueva Temporada"
+            />
+            @if (descripcion?.invalid && descripcion?.touched) {
+            <div class="invalid-feedback">
+              @if (descripcion?.errors?.['required']) {
+                <span>El nombre no puedo estar vacío.</span>
+              } @else if (descripcion?.errors?.['minlength']) {
+                <span>Debe contener al menos 6 caracteres.</span>
+              } @else if (descripcion?.errors?.['maxlength']) {
+                <span>No puede superar 100 caracteres.</span>
+              }
+            </div>
+            }
+          </div>
+
+          <!-- ID Club -->
+            <!-- <select formControlName="id_club">
+              <option [ngValue]="null" disabled>Selecciona un Club</option>
+                @for (club of clubes; track club.id) {
+                    <option [value]="club.id">{{ club.nombre }}</option>
+                }
+            </select> -->
+
+          <!-- Botones -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <a class="btn btn-outline-secondary" (click)="goBack()">
+              <i class="bi bi-arrow-left me-2"></i>Cancelar
+            </a>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="submitting() || temporadaForm.invalid"
+            >
+              @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              } @else {
+                <i class="bi bi-check-circle me-2"></i>
+              }
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>
