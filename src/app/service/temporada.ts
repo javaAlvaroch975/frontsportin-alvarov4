@@ -54,4 +54,8 @@ export class TemporadaService {
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/temporada/count');
   }
+
+  delete(id: number): Observable<number> {
+    return this.oHttp.delete<number>(serverURL + '/temporada/' + id);
+  }
 }

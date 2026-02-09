@@ -55,4 +55,13 @@ export class CategoriaService {
   count(): Observable<number> {
     return this.oHttp.get<number>(`${serverURL}/categoria/count`);
   }
+
+  
+
+  // Actualizar una categoría existente
+  update(categoria: Partial<ICategoria>): Observable<ICategoria> {
+    return this.oHttp.put<ICategoria>(`${serverURL}/categoria`, categoria);
+  }
+
+
 }
