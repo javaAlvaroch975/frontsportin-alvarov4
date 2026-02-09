@@ -1,47 +1,25 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ComentarioartService } from '../../../service/comentarioart';
-import { IComentarioart } from '../../../model/comentarioart';
-import { DatetimePipe } from '../../../pipe/datetime-pipe';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ComentarioartDetailAdminUnrouted } from '../detail-admin-unrouted/detail-admin-unrouted';
 
 @Component({
   selector: 'app-comentarioart-view',
-  imports: [CommonModule, RouterLink, DatetimePipe],
+  standalone: true,
+  imports: [ComentarioartDetailAdminUnrouted],
   templateUrl: './comentarioart-view.html',
   styleUrl: './comentarioart-view.css',
 })
-export class ComentarioartViewRouted implements OnInit {
-  private route = inject(ActivatedRoute);
-  private oComentarioartService = inject(ComentarioartService);
+export class ComentarioartViewRouted {
+  
+  id!: number;
 
-  oComentarioart = signal<IComentarioart | null>(null);
-  loading = signal(true);
-  error = signal<string | null>(null);
+  constructor(private route: ActivatedRoute) {
 
-  ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
-    if (isNaN(id)) {
-      this.error.set('ID no valido');
-      this.loading.set(false);
-      return;
-    }
-    this.load(id);
   }
 
-  private load(id: number) {
-    this.oComentarioartService.getById(id).subscribe({
-      next: (data: IComentarioart) => {
-        this.oComentarioart.set(data);
-        this.loading.set(false);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error.set('Error cargando el comentario');
-        this.loading.set(false);
-        console.error(err);
-      },
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.id = Number(params.get('id'));
     });
   }
 }

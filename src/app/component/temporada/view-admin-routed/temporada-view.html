@@ -1,195 +1,23 @@
-<div class="container py-3">
-  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">
-    <div>
-      <div class="text-uppercase small text-muted fw-semibold">Temporadas</div>
-      <div class="fw-bold">Detalle de temporada</div>
-      <div class="text-muted small">Panel administrativo</div>
+@if (!loading() && !error()) {
+  <app-temporada-detail-unrouted [id]="id_temporada"></app-temporada-detail-unrouted>
+}
+
+@if (loading()) {
+  <div class="container py-3">
+    <div class="text-center py-3">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="text-muted mt-2 mb-0">Cargando detalle...</p>
     </div>
-    <a class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" routerLink="/temporada">
-      <i class="bi bi-arrow-left"></i>
-      Volver
-    </a>
   </div>
-  @if (loading()) {
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="text-center py-3">
-          <div class="spinner-border text-secondary" role="status">
-            <span class="visually-hidden">Cargando...</span>
-          </div>
-          <p class="text-muted mt-2 mb-0">Cargando detalle...</p>
-        </div>
-      </div>
-    </div>
-  }
-  @if (error()) {
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>{{ error() }}</span>
-        </div>
-      </div>
-    </div>
-  }
-  @if (!loading() && !error() && oTemporada()) {
-    <div class="row g-3">
-      <div class="col-lg-6">
-        <div class="card border">
-          <div class="card-header bg-light small text-uppercase fw-semibold">Identificación</div>
-          <div class="card-body p-2">
-            <div class="fw-bold">
-              {{ oTemporada()?.descripcion }}
-            </div>
-            <div class="d-flex flex-wrap gap-2 mt-1">
-              <span class="badge bg-secondary-subtle text-secondary">ID {{ oTemporada()?.id }}</span>
-            </div>
-            <div class="mt-2">
-              <div class="row g-1">
-                <div class="col-5 text-muted small text-uppercase">Descripción</div>
-                <div class="col-7 fw-semibold small">{{ oTemporada()?.descripcion }}</div>
-                <div class="col-5 text-muted small text-uppercase">Categorías</div>
-                <div class="col-7 fw-semibold small">
-                  @if (oTemporada()?.categorias === 0) {
-                    0
-                  } @else {
-                    <a [routerLink]="['/categoria']" [queryParams]="{ id_temporada: oTemporada()?.id }">
-                      {{ oTemporada()?.categorias }}
-                    </a>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="card border">
-          <div class="card-header bg-light small text-uppercase fw-semibold">Relaciones</div>
-          <div class="card-body p-2">
-            <div class="row g-1">
-              <div class="col-5 text-muted small text-uppercase">Club</div>
-              <div class="col-7 fw-semibold small">
-                <a [routerLink]="['/club', 'view', oTemporada()?.club?.id]">
-                  {{ oTemporada()?.club?.nombre }} ({{ oTemporada()?.club?.id }})
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-12">
-        <div class="card border">
-          <div class="card-header bg-light small text-uppercase fw-semibold">Club (detalle)</div>
-          <div class="card-body p-2">
-            @if (oTemporada()?.club) {
-              <div class="row g-3">
-                <div class="col-lg-4">
-                  <div class="card border h-100">
-                    <div class="card-header bg-light small text-uppercase fw-semibold">Identificación</div>
-                    <div class="card-body p-2">
-                      <div class="fw-bold d-flex align-items-center gap-2 flex-wrap">
-                        <span>{{ oTemporada()?.club?.nombre }}</span>
-                        <span class="badge bg-secondary-subtle text-secondary">ID {{ oTemporada()?.club?.id }}</span>
-                      </div>
+}
 
-                      <div class="row g-1 mt-2">
-                        <div class="col-5 text-muted small text-uppercase">Dirección</div>
-                        <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.direccion }}</div>
-                        <div class="col-5 text-muted small text-uppercase">Teléfono</div>
-                        <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.telefono }}</div>
-                        <div class="col-5 text-muted small text-uppercase">Fecha alta</div>
-                        <div class="col-7 fw-semibold small">{{ oTemporada()?.club?.fechaAlta | datetime }}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-lg-8">
-                  <div class="card border h-100">
-                    <div class="card-header bg-light small text-uppercase fw-semibold">Actividad</div>
-                    <div class="card-body p-2">
-                      <div class="row g-2">
-                        <div class="col-6">
-                          <div class="border rounded p-2 bg-white h-100">
-                            <div class="text-muted small text-uppercase">Temporadas</div>
-                            <div class="fw-bold">
-                              @if (oTemporada()?.club?.temporadas === 0) {
-                                0
-                              } @else {
-                                <a class="text-decoration-none" [routerLink]="['/temporada/club', oTemporada()?.club?.id]">
-                                  {{ oTemporada()?.club?.temporadas }}
-                                </a>
-                              }
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="border rounded p-2 bg-white h-100">
-                            <div class="text-muted small text-uppercase">Usuarios</div>
-                            <div class="fw-bold">
-                              @if (oTemporada()?.club?.usuarios === 0) {
-                                0
-                              } @else {
-                                <a class="text-decoration-none" [routerLink]="['/usuario/club', oTemporada()?.club?.id]">
-                                  {{ oTemporada()?.club?.usuarios }}
-                                </a>
-                              }
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="border rounded p-2 bg-white h-100">
-                            <div class="text-muted small text-uppercase">Noticias</div>
-                            <div class="fw-bold">
-                              @if (oTemporada()?.club?.noticias === 0) {
-                                0
-                              } @else {
-                                <a class="text-decoration-none" [routerLink]="['/noticia/club', oTemporada()?.club?.id]">
-                                  {{ oTemporada()?.club?.noticias }}
-                                </a>
-                              }
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="border rounded p-2 bg-white h-100">
-                            <div class="text-muted small text-uppercase">Tipos artículos</div>
-                            <div class="fw-bold">
-                              @if (oTemporada()?.club?.tipoarticulos === 0) {
-                                0
-                              } @else {
-                                <a class="text-decoration-none" [routerLink]="['/tipoarticulo/club', oTemporada()?.club?.id]">
-                                  {{ oTemporada()?.club?.tipoarticulos }}
-                                </a>
-                              }
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              @if (oTemporada()?.club?.imagen) {
-                <div class="row g-3 mt-2">
-                  <div class="col-12">
-                    <div class="card border">
-                      <div class="card-header bg-light small text-uppercase fw-semibold">Imagen</div>
-                      <div class="card-body p-2">
-                        <img [src]="'data:image/png;base64,' + oTemporada()?.club?.imagen" class="img-fluid" alt="Imagen del club">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            } @else {
-              <div class="text-muted">Sin club asignado.</div>
-            }
-          </div>
-        </div>
-      </div>
+@if (error()) {
+  <div class="container py-3">
+    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error() }}</span>
     </div>
-  }
-</div>
+  </div>
+}

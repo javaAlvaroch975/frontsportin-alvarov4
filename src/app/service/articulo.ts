@@ -46,13 +46,13 @@ export class ArticuloService {
     return this.oHttp.get<IArticulo>(serverURL + '/articulo/' + id);
    }
 
-  // create(articulo: Partial<IArticulo>): Observable<number> {
-  //   return this.oHttp.post<number>(serverURL + '/articulo', articulo);
-  // }
+  create(articulo: Partial<IArticulo>): Observable<number> {
+    return this.oHttp.post<number>(serverURL + '/articulo', articulo);
+  }
 
-  // update(articulo: Partial<IArticulo>): Observable<number> {
-  //   return this.oHttp.put<number>(serverURL + '/articulo', articulo);
-  // }
+  update(articulo: Partial<IArticulo>): Observable<number> {
+    return this.oHttp.put<number>(serverURL + '/articulo', articulo);
+  }
 
   // delete(id: number): Observable<number> {
   //   return this.oHttp.delete<number>(serverURL + '/articulo/' + id);
@@ -61,14 +61,6 @@ export class ArticuloService {
   // empty(): Observable<number> {
   //   return this.oHttp.delete<number>(serverURL + '/articulo/empty');
   // }
-
-  //   publicar(id: number): Observable<number> {
-  //     return this.oHttp.put<number>(serverURL + '/articulo/publicar/' + id, {});
-  //   }
-
-  //   despublicar(id: number): Observable<number> {
-  //     return this.oHttp.put<number>(serverURL + '/articulo/despublicar/' + id, {});
-  //   }
 
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/articulo/count');

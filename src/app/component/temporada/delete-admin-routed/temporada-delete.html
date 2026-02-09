@@ -1,0 +1,29 @@
+<app-temporada-detail-unrouted [id]="id_temporada"></app-temporada-detail-unrouted>
+
+<div class="container py-3">
+  <div class="card border">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4">¿Confirma que desea eliminar esta temporada?</h3>
+      
+      @if (tieneCategorias()) {
+        <div class="alert alert-warning text-center" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>No se puede eliminar esta temporada</strong><br>
+          Tiene {{ oTemporada()?.categorias }} categorías asociadas. Elimine primero las categorías.
+        </div>
+      }
+      
+      <div class="text-center">
+        <button 
+          class="btn btn-danger mx-2" 
+          (click)="doDelete()"
+          [disabled]="tieneCategorias() || loading()">
+          <i class="bi bi-trash"></i> Eliminar
+        </button>
+        <button class="btn btn-secondary mx-2" (click)="doCancel()">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

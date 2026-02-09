@@ -54,4 +54,8 @@ export class RolusuarioService {
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/rolusuario/count');
   }
+
+  update(rolusuario: Partial<IRolusuario>): Observable<IRolusuario> {
+    return this.oHttp.put<IRolusuario>(serverURL + '/rolusuario', rolusuario);
+  }
 }

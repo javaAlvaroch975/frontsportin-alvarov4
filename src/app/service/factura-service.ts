@@ -41,7 +41,12 @@ getPage(
   get(id: number): Observable<IFactura> {
       return this.oHttp.get<IFactura>(`${serverURL}/factura/${id}`);
     }
+
+  delete(id: number): Observable<number> {
+      return this.oHttp.delete<number>(serverURL + '/factura/' + id);
+    }
+
   count(): Observable<number> {
-    return this.oHttp.get<number>(serverURL + '/factura/count');
-  }
+      return this.oHttp.get<number>(serverURL + '/factura/count');
+    }
 }
