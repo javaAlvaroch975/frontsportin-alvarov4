@@ -148,6 +148,27 @@
               <i class="bi bi-search me-2"></i>Buscar tipo de artículo
             </button>
 
+            <div class="d-flex align-items-center gap-3">
+              <div>
+                <label for="id_tipoarticulo" class="form-label">ID Tipo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id_tipoarticulo"
+                  formControlName="id_tipoarticulo"
+                  readonly
+                />
+              </div>
+              @if (selectedTipoarticulo()) {
+                <div class="flex-grow-1">
+                  <label class="form-label">Descripción</label>
+                  <p class="form-control-plaintext fw-semibold">
+                    {{ selectedTipoarticulo()?.descripcion }}
+                  </p>
+                </div>
+              }
+            </div>
+
             <!---- final rafa -->
 
             <!-- Botones -->

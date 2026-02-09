@@ -32,6 +32,7 @@ export class ArticuloEditAdminRouted implements OnInit {
   error = signal<string | null>(null);
   submitting = signal(false);
   tiposarticulo = signal<ITipoarticulo[]>([]);
+  selectedTipoarticulo = signal<ITipoarticulo | null>(null);
 
   constructor(private dialog: MatDialog) {}
 
@@ -177,6 +178,20 @@ export class ArticuloEditAdminRouted implements OnInit {
         title: 'Aqui elegir tipoarticulo',
         message: 'Plist finder para encontrar el tipoarticulo y asignarlo al articulo',
       },
+    });
+
+    dialogRef.afterClosed().subscribe((tipoarticulo: ITipoarticulo | null) => {
+      if (tipoarticulo) {
+        this.selectedTipoarticulo.set(tipoarticulo);
+        this.articuloForm.patchValue({
+          id_tipoarticulo: tipoarticulo.id,
+        });
+        this.snackBar.open(
+          `Tipo de artículo seleccionado: ${tipoarticulo.descripcion}`,
+          'Cerrar',
+          { duration: 3000 }
+        );
+      }
     });
   }
 }
