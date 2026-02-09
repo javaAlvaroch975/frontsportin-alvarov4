@@ -4,6 +4,7 @@ import { Home } from './component/shared/home/home';
 import { UsuarioPlist } from './component/usuario/usuario-plist/usuario-plist';
 import { ArticuloPlistAdminRouted } from './component/articulo/plist-admin-routed/articulo-plist';
 import { ArticuloViewAdminRouted } from './component/articulo/view-admin-routed/articulo-view';
+import { ArticuloDeleteAdminRouted } from './component/articulo/delete-admin-routed/articulo-delete';
 import { ArticuloEditAdminRouted } from './component/articulo/edit-admin-routed/articulo-edit';
 import { UsuarioViewRouted } from './component/usuario/view-routed/usuario-view';
 import { CategoriaPlistAdminRouted } from './component/categoria/plist-admin-routed/categoria-plist';
@@ -48,6 +49,7 @@ import { CategoriaEditAdminRouted } from './component/categoria/edit-admin-route
 import { LigaViewRouted } from './component/liga/view-routed/liga-view';
 import { ComentarioartViewRouted } from './component/comentarioart/view-routed/comentarioart-view';
 import { PagoDeleteAdminRouted } from './component/pago/delete-admin-routed/pago-delete';
+import { PartidoDeleteAdminRouted } from './component/partido/delete-admin-routed/partido-delete';
 import { ClubDeleteAdminRouted } from './component/club/delete-admin-routed/club-delete';
 import { PuntuacionDeleteAdminRouted } from './component/puntuacion/delete-admin-routed/puntuacion-delete';
 import { RolusuarioEditAdminRouted } from './component/rolusuario/edit-admin-routed/rolusuario-edit';
@@ -78,6 +80,7 @@ export const routes: Routes = [
     { path: 'usuario/:id', component: UsuarioViewRouted},
     { path: 'articulo/:tipoarticulo', component: ArticuloPlistAdminRouted},
     { path: 'articulo/view/:id', component: ArticuloViewAdminRouted},
+    { path: 'articulo/delete/:id', component: ArticuloDeleteAdminRouted},
     { path: 'articulo/edit/:id', component: ArticuloEditAdminRouted },
     { path: 'categoria', component: CategoriaPlistAdminRouted},
     { path: 'categoria/temporada/:id_temporada', component: CategoriaPlistAdminRouted},
@@ -86,6 +89,7 @@ export const routes: Routes = [
     { path: 'partido', component: PartidoPlistAdminRouted},
     { path: 'partido/liga/:id_liga', component: PartidoPlistAdminRouted},
     { path: 'partido/view/:id', component: PartidoViewAdminRouted},
+    { path: 'partido/delete/:id', component: PartidoDeleteAdminRouted },
     { path: 'factura', component: FacturaPlistAdminRouted },
     { path: 'factura/:usuario', component: FacturaPlistAdminRouted },
     { path: 'factura/view/:id', component: FacturaViewAdminRouted },

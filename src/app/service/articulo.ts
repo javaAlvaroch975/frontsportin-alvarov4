@@ -54,9 +54,9 @@ export class ArticuloService {
     return this.oHttp.put<number>(serverURL + '/articulo', articulo);
   }
 
-  // delete(id: number): Observable<number> {
-  //   return this.oHttp.delete<number>(serverURL + '/articulo/' + id);
-  // }
+  delete(id: number): Observable<number> {
+    return this.oHttp.delete<number>(serverURL + '/articulo/' + id);
+   }
 
   // empty(): Observable<number> {
   //   return this.oHttp.delete<number>(serverURL + '/articulo/empty');

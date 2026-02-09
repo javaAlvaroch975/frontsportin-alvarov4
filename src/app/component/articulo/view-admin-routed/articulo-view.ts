@@ -1,50 +1,24 @@
-import { Component, signal, computed, effect } from '@angular/core';
-import { IArticulo } from '../../../model/articulo';
-import { ArticuloService } from '../../../service/articulo';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { ArticuloDetail } from '../articulo-detail/articulo-detail';
 
 @Component({
   selector: 'app-articulo-view',
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink, ArticuloDetail],
   templateUrl: './articulo-view.html',
   styleUrl: './articulo-view.css',
 })
-export class ArticuloViewAdminRouted {
+export class ArticuloViewAdminRouted implements OnInit {
+  private route = inject(ActivatedRoute);
 
+  id = signal<number>(0);
 
-  constructor(
-    private oArticuloService: ArticuloService,
-    private route: ActivatedRoute,
-  ) {} 
-  id: number = 0; 
-  loading = signal(true);
-  oArticulo= signal<IArticulo | null>(null);
-  error= signal<string| null>(null);
-
-  ngOnInit() {
+  ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
-  if (idParam) {
-      this.id = +idParam;
-      this.load();
-    } else {
-      this.error.set("Error: No se ha proporcionado un ID válido.");
-      this.loading.set(false);
+    const idValue = idParam ? Number(idParam) : NaN;
+    if (!isNaN(idValue)) {
+      this.id.set(idValue);
     }
-  }
-
-  load() {
-    this.oArticuloService.get(this.id).subscribe({
-      next: (data: IArticulo) => {
-        this.oArticulo.set(data);
-        this.loading.set(false);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.error.set(`Error al recuperar el artículo: ${error.message}`);
-        this.loading.set(false);
-        console.error(error);
-      },
-    });
-
   }
 }
