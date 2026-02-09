@@ -143,8 +143,12 @@
       <tbody>
         @for (oArticulo of oPage()?.content; track oArticulo.id) {
           <tr>
-            <th scope="row" style="text-align: center">{{ oArticulo.id }}</th>
-            <td>{{ oArticulo.descripcion }}</td>
+              <th scope="row" style="text-align: center">
+                <a [routerLink]="['/articulo/view', oArticulo.id]" class="text-decoration-none">{{ oArticulo.id }}</a>
+              </th>
+              <td>
+                <a [routerLink]="['/articulo/view', oArticulo.id]" class="text-decoration-none">{{ oArticulo.descripcion }}</a>
+              </td>
             <td style="text-align: right">{{ oArticulo.precio }} €</td>
             <td style="text-align: right">
               @if (oArticulo.descuento == null) {
@@ -155,7 +159,7 @@
             </td>
 
             <td>
-              <a [routerLink]="['/tipoarticulo', '/view', oArticulo.tipoarticulo.id]">
+              <a [routerLink]="['/tipoarticulo', 'view', oArticulo.tipoarticulo.id]">
                 {{ oArticulo.tipoarticulo.descripcion | trim: 20 }}
                 {{ ' (' + oArticulo.tipoarticulo.id + ')' }}
               </a>

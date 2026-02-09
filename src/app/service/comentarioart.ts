@@ -69,4 +69,8 @@ export class ComentarioartService {
     count(): Observable<number> {
         return this.oHttp.get<number>(serverURL + '/comentarioart/count');
     }
+
+    delete(id: number): Observable<number> {
+        return this.oHttp.delete<number>(serverURL + '/comentarioart/' + id);
+    }
 }

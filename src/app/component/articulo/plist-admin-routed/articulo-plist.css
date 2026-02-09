@@ -1,0 +1,11 @@
+/* Estilos para el botón de eliminar deshabilitado */
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn.disabled:hover {
+  background-color: inherit;
+  border-color: inherit;
+}

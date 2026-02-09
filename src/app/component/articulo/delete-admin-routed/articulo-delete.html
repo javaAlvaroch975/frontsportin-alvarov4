@@ -1,0 +1,61 @@
+<div class="container py-3">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">
+    <div>
+      <div class="text-uppercase small text-muted fw-semibold">Artículos</div>
+      <div class="fw-bold">Eliminar artículo</div>
+      <div class="text-muted small">Panel administrativo</div>
+    </div>
+    <a class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" routerLink="/articulo">
+      <i class="bi bi-arrow-left"></i>
+      Volver
+    </a>
+  </div>
+
+  @if (articulo() && ((articulo().comentarioarts ?? 0) + (articulo().compras ?? 0) + (articulo().carritos ?? 0) > 0)) {
+    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>
+        ¿Seguro que quieres eliminar este registro? Afectará a
+        <strong>{{ articulo().comentarioarts ?? 0 }}</strong> comentario(s),
+        <strong>{{ articulo().compras ?? 0 }}</strong> compra(s) y
+        <strong>{{ articulo().carritos ?? 0 }}</strong> carrito(s).
+      </span>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span>{{ error() }}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <app-articulo-detail [id]="id()"></app-articulo-detail>
+
+  <div class="row g-3 mt-3">
+    <div class="col-12">
+      <div class="d-flex gap-2 justify-content-end">
+        <button
+          class="btn btn-danger"
+          (click)="delete()"
+          [disabled]="deleting()">
+          @if (deleting()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+          }
+          Eliminar
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          (click)="cancel()"
+          [disabled]="deleting()">
+          Volver
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

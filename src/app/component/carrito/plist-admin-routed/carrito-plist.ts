@@ -4,11 +4,9 @@ import { Component, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
 import { IPage } from '../../../model/plist';
 import { ICarrito } from '../../../model/carrito';
 import { CarritoService } from '../../../service/carrito';
-
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
 import { debounceTimeSearch } from '../../../environment/environment';

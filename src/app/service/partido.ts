@@ -6,7 +6,7 @@ import { IPage } from '../model/plist';
 import { IPartido } from '../model/partido';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PartidoService {
 
@@ -56,5 +56,9 @@ export class PartidoService {
 
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/partido/count');
+  }
+
+  delete(id: number): Observable<number> {
+    return this.oHttp.delete<number>(serverURL + '/partido/' + id);
   }
 }

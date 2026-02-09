@@ -1,0 +1,328 @@
+<div class="container py-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border rounded bg-light p-2 mb-3">
+        <div>
+            <div class="text-uppercase small text-muted fw-semibold">Carritos</div>
+            <div class="fw-bold">Detalle de carrito</div>
+            <div class="text-muted small">Panel administrativo</div>
+        </div>
+        <a class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" routerLink="/carrito">
+            <i class="bi bi-arrow-left"></i>
+            Volver
+        </a>
+    </div>
+
+    @if (loading()) {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="text-muted mt-2 mb-0">Cargando detalle...</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (error()) {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>{{ error() }}</span>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!loading() && !error() && oCarrito()) {
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="card border">
+                    <div class="card-header bg-light small text-uppercase fw-semibold">Identificación</div>
+                    <div class="card-body p-2">
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <span class="badge bg-secondary-subtle text-secondary">ID {{ oCarrito()?.id }}</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="row g-1">
+                                <div class="col-5 text-muted small text-uppercase">Cantidad</div>
+                                <div class="col-7 fw-semibold small">{{ oCarrito()?.cantidad }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border">
+                    <div class="card-header bg-light small text-uppercase fw-semibold">Relaciones</div>
+                    <div class="card-body p-2">
+                        <div class="row g-1">
+                            <div class="col-5 text-muted small text-uppercase">Artículo</div>
+                            <div class="col-7 fw-semibold small">
+                                @if (oCarrito()?.articulo?.descripcion) {
+                                    <a [routerLink]="['/articulo/view', oCarrito()?.articulo?.id]">
+                                        {{ oCarrito()?.articulo?.descripcion }} ({{ oCarrito()?.articulo?.id }})
+                                    </a>
+                                } @else {
+                                    Sin artículo
+                                }
+                            </div>
+                            <div class="col-5 text-muted small text-uppercase">Usuario</div>
+                            <div class="col-7 fw-semibold small">
+                                @if (oCarrito()?.usuario?.nombre) {
+                                    <a [routerLink]="['/usuario/view', oCarrito()?.usuario?.id]">
+                                        {{ oCarrito()?.usuario?.nombre }} ({{ oCarrito()?.usuario?.id }})
+                                    </a>
+                                } @else {
+                                    Sin usuario
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card border">
+                    <div class="card-header bg-light small text-uppercase fw-semibold">Artículo (detalle)</div>
+                    <div class="card-body p-2">
+                        @if (oCarrito()?.articulo) {
+                            <div class="row g-2">
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Descripción</div>
+                                        <a
+                                            [routerLink]="['/articulo/view', oCarrito()?.articulo?.id]"
+                                            class="fw-semibold text-decoration-underline d-inline-block"
+                                            title="Ver articulo"
+                                        >
+                                            {{ oCarrito()?.articulo?.descripcion }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Precio</div>
+                                        {{ oCarrito()?.articulo?.precio }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Descuento</div>
+                                        {{ oCarrito()?.articulo?.descuento }}
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Comentarios</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.articulo?.comentarioarts === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/comentarioart', oCarrito()?.articulo?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver comentarios del artículo"
+                                                    >
+                                                        {{ oCarrito()?.articulo?.comentarioarts }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Compras</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.articulo?.compras === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/compra/', oCarrito()?.articulo?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver compras del artículo"
+                                                    >
+                                                        {{ oCarrito()?.articulo?.compras }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Carritos</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.articulo?.carritos === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/carrito/', oCarrito()?.articulo?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver carritos del artículo"
+                                                    >
+                                                        {{ oCarrito()?.articulo?.carritos }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        } @else {
+                            <div class="text-muted">Sin artículo asignado.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card border">
+                    <div class="card-header bg-light small text-uppercase fw-semibold">Usuario (detalle)</div>
+                    <div class="card-body p-2">
+                        @if (oCarrito()?.articulo) {
+                            <div class="row g-2">
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Nombre</div>
+                                        <a
+                                            [routerLink]="['/usuario/view', oCarrito()?.usuario?.id]"
+                                            class="fw-semibold text-decoration-underline d-inline-block"
+                                            title="Ver usuario"
+                                        >
+                                            {{ oCarrito()?.usuario?.nombre }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Apellido 1</div>
+                                        {{ oCarrito()?.usuario?.apellido1 }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Apellido 2</div>
+                                        {{ oCarrito()?.usuario?.apellido2 }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Género</div>
+                                            @if (oCarrito()?.usuario?.genero === 0) {
+                                                Hombre
+                                            } @else {
+                                                Mujer
+                                            }
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-lg-3">
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-muted small text-uppercase">Fecha alta</div>
+                                        {{ oCarrito()?.usuario?.fechaAlta }}
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Comentarios</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.usuario?.comentarios === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/comentario', oCarrito()?.usuario?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver comentarios del usuario"
+                                                    >
+                                                        {{ oCarrito()?.usuario?.comentarios }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Puntuaciones</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.usuario?.puntuaciones === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/usuario', oCarrito()?.usuario?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver puntuaciones del usuario"
+                                                    >
+                                                        {{ oCarrito()?.usuario?.puntuaciones }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Comentarios Artículos</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.usuario?.comentarioarts === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/comentarioart', oCarrito()?.usuario?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver comentarios del artículo del usuario"
+                                                    >
+                                                        {{ oCarrito()?.usuario?.comentarioarts }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Carritos</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.usuario?.carritos === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/carrito/', oCarrito()?.usuario?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver carritos del usuario"
+                                                    >
+                                                        {{ oCarrito()?.usuario?.carritos }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-lg-4">
+                                        <div class="border rounded p-2 bg-white">
+                                            <div class="text-muted small text-uppercase">Facturas</div>
+                                            <div class="fw-semibold">
+                                                @if (oCarrito()?.usuario?.facturas === 0) {
+                                                    0
+                                                } @else {
+                                                    <a
+                                                        [routerLink]="['/factura/', oCarrito()?.usuario?.id]"
+                                                        class="text-decoration-underline d-inline-block"
+                                                        title="Ver facturas del usuario"
+                                                    >
+                                                        {{ oCarrito()?.usuario?.facturas }}
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        } @else {
+                            <div class="text-muted">Sin usuario asignado.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
