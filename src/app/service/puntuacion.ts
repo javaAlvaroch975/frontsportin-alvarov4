@@ -78,4 +78,8 @@ export class PuntuacionService {
   count(): Observable<number> {
     return this.oHttp.get<number>(serverURL + '/puntuacion/count');
   }
+
+  delete(id: number): Observable<number> {
+    return this.oHttp.delete<number>(serverURL + '/puntuacion/' + id);
+  }
 }

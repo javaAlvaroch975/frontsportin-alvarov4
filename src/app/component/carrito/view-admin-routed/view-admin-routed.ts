@@ -1,47 +1,36 @@
-import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { DatetimePipe } from '../../../pipe/datetime-pipe';
 import { CarritoService } from '../../../service/carrito';
 import { ICarrito } from '../../../model/carrito';
+import { CarritoDetailAdminUnrouted } from "../detail-admin-unrouted/carrito-detail";
+
 
 @Component({
-  selector: 'app-view-admin-routed',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
+  selector: 'app-carrito-view',
+  imports: [CommonModule, CarritoDetailAdminUnrouted],
   templateUrl: './view-admin-routed.html',
   styleUrl: './view-admin-routed.css',
 })
-export class CarritoViewAdminRouted {
-    carrito = signal<ICarrito | null>(null);
-    loading = signal<boolean>(false);
-    error = signal<string>('');
+export class CarritoViewAdminRouted implements OnInit {
 
-    constructor(private carritoService: CarritoService, private route: ActivatedRoute) {
+  private route = inject(ActivatedRoute);  
+  //private snackBar = inject(MatSnackBar);
 
+  oCarrito = signal<ICarrito | null>(null);
+  loading = signal(true);
+  error = signal<string | null>(null);
+  id_carrito = signal<number>(0);
+
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.id_carrito.set(idParam ? Number(idParam) : NaN);
+    if (isNaN(this.id_carrito())) {
+      this.error.set('ID no válido');
+      this.loading.set(false);
+      return;
     }
-
-    ngOnInit() {
-        const id = Number(this.route.snapshot.paramMap.get('id'));
-        if (id) {
-            this.loadCarrito(id);
-        }
-    }
-
-    loadCarrito(id: number) {
-        this.loading.set(true);
-        this.error.set('');
-
-        this.carritoService.getById(id).subscribe({
-        next: (data: ICarrito) => {
-            this.carrito.set(data);
-            this.loading.set(false);
-        },
-        error: (error: HttpErrorResponse) => {
-            console.error(error);
-            this.error.set('No se ha podido cargar el carrito.');
-            this.loading.set(false);
-        }
-        });
-    }   
+  }
 }
