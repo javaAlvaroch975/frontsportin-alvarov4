@@ -2,7 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { Paginacion } from '../../shared/paginacion/paginacion';
 import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
 import { TrimPipe } from '../../../pipe/trim-pipe';
@@ -40,6 +40,8 @@ export class PlistEquipo {
   nombre = signal<string>('');
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
+  // Cache to avoid refetching the large page on every keystroke
+  private cachedAll: IEquipo[] | null = null;
 
   constructor(
     private oEquipoService: EquipoService,
@@ -58,14 +60,13 @@ export class PlistEquipo {
     }
 
     // Configurar el debounce para la búsqueda
+    // Búsqueda inmediata: emitimos al momento (solo distinctUntilChanged para evitar llamadas repetidas con mismo término)
     this.searchSubscription = this.searchSubject
-      .pipe(
-        debounceTime(debounceTimeSearch), // Espera después de que el usuario deje de escribir
-        distinctUntilChanged(), // Solo emite si el valor cambió
-      )
+      .pipe(distinctUntilChanged())
       .subscribe((searchTerm: string) => {
         this.nombre.set(searchTerm);
         this.numPage.set(0);
+        // No clear cache here; getPage gestionará si necesita fetch o filtrar localmente
         this.getPage();
       });
 
@@ -85,43 +86,54 @@ export class PlistEquipo {
     // luego paginamos el resultado localmente.
     if (this.nombre() && this.nombre().trim().length > 0) {
       const searchTerm = this.nombre().trim().toLowerCase();
-      // traer un page grande que contenga todos los posibles registros del backend
+
+      const buildAndSetLocalPage = (all: IEquipo[]) => {
+        const filtered = all.filter((e) => (e.nombre || '').toLowerCase().includes(searchTerm));
+
+        const totalElements = filtered.length;
+        const size = this.numRpp();
+        const totalPages = Math.max(1, Math.ceil(totalElements / size));
+        const page = Math.min(this.numPage(), totalPages - 1);
+        const start = page * size;
+        const pageContent = filtered.slice(start, start + size);
+
+        const localPage: IPage<IEquipo> = {
+          content: pageContent,
+          pageable: {
+            pageNumber: page,
+            pageSize: size,
+            sort: { sorted: true, unsorted: false, empty: false },
+            offset: start,
+            paged: true,
+            unpaged: false,
+          },
+          totalPages: totalPages,
+          totalElements: totalElements,
+          last: page === totalPages - 1,
+          size: size,
+          number: page,
+          sort: { sorted: true, unsorted: false, empty: false },
+          first: page === 0,
+          numberOfElements: pageContent.length,
+          empty: pageContent.length === 0,
+        };
+
+        this.oPage.set(localPage);
+      };
+
+      if (this.cachedAll) {
+        // Filtrar en cliente usando cache
+        buildAndSetLocalPage(this.cachedAll);
+        return;
+      }
+
+      // Si no hay cache, traer un page grande que contenga todos los posibles registros del backend
       this.oEquipoService
         .getPage(0, 1000, this.orderField(), this.orderDirection(), '', this.categoria(), this.usuario())
         .subscribe({
           next: (data: IPage<IEquipo>) => {
-            const all = data.content || [];
-            const filtered = all.filter((e) => (e.nombre || '').toLowerCase().includes(searchTerm));
-
-            const totalElements = filtered.length;
-            const size = this.numRpp();
-            const totalPages = Math.max(1, Math.ceil(totalElements / size));
-            const page = Math.min(this.numPage(), totalPages - 1);
-            const start = page * size;
-            const pageContent = filtered.slice(start, start + size);
-
-            const localPage: IPage<IEquipo> = {
-              content: pageContent,
-              pageable: {
-                pageNumber: page,
-                pageSize: size,
-                sort: { sorted: true, unsorted: false, empty: false },
-                offset: start,
-                paged: true,
-                unpaged: false,
-              },
-              totalPages: totalPages,
-              totalElements: totalElements,
-              last: page === totalPages - 1,
-              size: size,
-              number: page,
-              sort: { sorted: true, unsorted: false, empty: false },
-              first: page === 0,
-              numberOfElements: pageContent.length,
-              empty: pageContent.length === 0,
-            };
-
-            this.oPage.set(localPage);
+            this.cachedAll = data.content || [];
+            buildAndSetLocalPage(this.cachedAll);
           },
           error: (error: HttpErrorResponse) => {
             console.error(error);
@@ -162,6 +174,8 @@ export class PlistEquipo {
       this.orderField.set(order);
       this.orderDirection.set('asc');
     }
+    // Cambiar orden invalida la cache local de resultados de búsqueda
+    this.cachedAll = null;
     this.numPage.set(0);
     this.getPage();
   }
@@ -178,7 +192,11 @@ export class PlistEquipo {
   }
 
   onSearchNombre(value: string) {
-    // Emitir el valor al Subject para que sea procesado con debounce
+    // Emitir el valor al Subject para procesamiento inmediato
+    // Si el valor queda vacío, limpiar la cache para que la próxima consulta venga del servidor
+    if (!value || value.trim().length === 0) {
+      this.cachedAll = null;
+    }
     this.searchSubject.next(value);
   }
 }
