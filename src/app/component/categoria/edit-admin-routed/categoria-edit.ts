@@ -1,119 +1,93 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoriaService } from '../../../service/categoria';
 import { TemporadaService } from '../../../service/temporada';
 import { ICategoria } from '../../../model/categoria';
 import { ITemporada } from '../../../model/temporada';
-import { IPage } from '../../../model/plist';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-categoria-edit',
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './categoria-edit.html',
   styleUrl: './categoria-edit.css',
 })
 export class CategoriaEditAdminRouted implements OnInit {
-  private fb = inject(FormBuilder);
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
   private oCategoriaService = inject(CategoriaService);
   private oTemporadaService = inject(TemporadaService);
   private snackBar = inject(MatSnackBar);
 
   categoriaForm!: FormGroup;
-  categoriaId: number | null = null;
-  loading: boolean = true;
-  error: string | null = null;
-  submitting: boolean = false;
-  temporadas: ITemporada[] = [];
+  id_categoria = signal<number>(0);
+  loading = signal(true);
+  error = signal<string | null>(null);
+  submitting = signal(false);
+  temporadas = signal<ITemporada[]>([]);
 
   ngOnInit(): void {
-    this.inicializarFormulario();
-    this.cargarTemporadas();
-    
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.categoriaId = +id;
-      this.cargarCategoria(+id);
-    } else {
-      this.loading = false;
-      this.error = 'ID de categoría no válido';
-    }
-  }
+    this.initForm();
+    this.loadTemporadas();
 
-  inicializarFormulario(): void {
-    this.categoriaForm = this.fb.group({
-      nombre: ['', [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(255)
-      ]],
-      id_temporada: [null, [Validators.required]]
-    });
-  }
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-  cargarTemporadas(): void {
-    this.oTemporadaService.getPage(0, 100, 'descripcion', 'asc', '', 0).subscribe({
-      next: (page: IPage<ITemporada>) => {
-        this.temporadas = page.content.map(t => ({
-          id: t.id,
-          descripcion: t.descripcion
-        } as any));
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Error al cargar temporadas', err);
-        this.snackBar.open('Error al cargar las temporadas', 'Cerrar', { duration: 4000 });
-      }
-    });
-  }
-
-  cargarCategoria(id: number): void {
-    this.oCategoriaService.get(id).subscribe({
-      next: (categoria: ICategoria) => {
-        this.categoriaForm.patchValue({
-          nombre: categoria.nombre,
-          id_temporada: categoria.temporada.id
-        });
-        this.loading = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error = 'Error al cargar la categoría';
-        this.loading = false;
-        console.error(err);
-      }
-    });
-  }
-
-  enviarFormulario(): void {
-    if (!this.categoriaForm.valid || !this.categoriaId) {
-      this.categoriaForm.markAllAsTouched();
+    if (!idParam || idParam === '0') {
+      this.error.set('ID de categoría no válido');
+      this.loading.set(false);
       return;
     }
 
-    this.submitting = true;
+    this.id_categoria.set(Number(idParam));
 
-    const payload: any = {
-      id: this.categoriaId,
-      nombre: this.categoriaForm.value.nombre,
-      temporada: {
-        id: this.categoriaForm.value.id_temporada
-      }
-    };
+    if (isNaN(this.id_categoria())) {
+      this.error.set('ID no válido');
+      this.loading.set(false);
+      return;
+    }
 
-    this.oCategoriaService.update(payload).subscribe({
-      next: () => {
-        this.submitting = false;
-        this.snackBar.open('Categoría actualizada correctamente', 'Cerrar', { duration: 4000 });
-        this.router.navigate(['/categoria']);
+    this.loadCategoria();
+  }
+
+  private initForm(): void {
+    this.categoriaForm = this.fb.group({
+      id: [{ value: 0, disabled: true }],
+      nombre: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(255)]],
+      id_temporada: [null, Validators.required]
+    });
+  }
+
+  private loadCategoria(): void {
+    this.oCategoriaService.get(this.id_categoria()).subscribe({
+      next: (categoria: ICategoria) => {
+        this.categoriaForm.patchValue({
+          id: categoria.id,
+          nombre: categoria.nombre,
+          id_temporada: categoria.temporada?.id
+        });
+        this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.submitting = false;
-        this.error = 'Error al actualizar la categoría';
-        this.snackBar.open('Error al actualizar la categoría', 'Cerrar', { duration: 4000 });
+        this.error.set('Error cargando la categoría');
+        this.snackBar.open('Error cargando la categoría', 'Cerrar', { duration: 4000 });
+        console.error(err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  private loadTemporadas(): void {
+    this.oTemporadaService.getPage(0, 1000, 'descripcion', 'asc', '', 0).subscribe({
+      next: (page) => {
+        this.temporadas.set(page.content);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.snackBar.open('Error cargando temporadas', 'Cerrar', { duration: 4000 });
         console.error(err);
       }
     });
@@ -125,5 +99,34 @@ export class CategoriaEditAdminRouted implements OnInit {
 
   get id_temporada() {
     return this.categoriaForm.get('id_temporada');
+  }
+
+  onSubmit(): void {
+    if (this.categoriaForm.invalid) {
+      this.snackBar.open('Por favor, complete todos los campos correctamente', 'Cerrar', { duration: 4000 });
+      return;
+    }
+
+    this.submitting.set(true);
+
+    const categoriaData: any = {
+      id: this.id_categoria(),
+      nombre: this.categoriaForm.value.nombre,
+      temporada: { id: this.categoriaForm.value.id_temporada }
+    };
+
+    this.oCategoriaService.update(categoriaData).subscribe({
+      next: () => {
+        this.snackBar.open('Categoría actualizada exitosamente', 'Cerrar', { duration: 4000 });
+        this.submitting.set(false);
+        this.router.navigate(['/categoria']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error.set('Error actualizando la categoría');
+        this.snackBar.open('Error actualizando la categoría', 'Cerrar', { duration: 4000 });
+        console.error(err);
+        this.submitting.set(false);
+      }
+    });
   }
 }

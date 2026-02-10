@@ -1,20 +1,22 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, signal, OnInit, inject, Input, Signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { DatetimePipe } from '../../../pipe/datetime-pipe';
 import { EquipoService } from '../../../service/equipo';
 import { IEquipo } from '../../../model/equipo';
-import { DatetimePipe } from '../../../pipe/datetime-pipe';
-
 
 @Component({
-  selector: 'app-equipo-view',
+  selector: 'app-equipo-detail-unrouted',
   imports: [CommonModule, RouterLink, DatetimePipe],
-  templateUrl: './equipo-view.html',
-  styleUrl: './equipo-view.css',
+  templateUrl: './equipo-detail.html',
+  styleUrl: './equipo-detail.css',
 })
-export class EquipoViewRouted implements OnInit {
-  private route = inject(ActivatedRoute);
+
+export class EquipoDetailAdminUnrouted implements OnInit {
+
+  @Input() id: Signal<number> = signal(0);
+
   private oEquipoService = inject(EquipoService);
   //private snackBar = inject(MatSnackBar);
 
@@ -23,14 +25,7 @@ export class EquipoViewRouted implements OnInit {
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : NaN;
-    if (isNaN(id)) {
-      this.error.set('ID no válido');
-      this.loading.set(false);
-      return;
-    }
-    this.load(id);
+    this.load(this.id());
   }
 
   load(id: number) {
@@ -40,9 +35,9 @@ export class EquipoViewRouted implements OnInit {
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.error.set('Error cargando el equipo');
+        this.error.set('Error cargando el usuario');
         this.loading.set(false);
-        //this.snackBar.open('Error cargando el equipo', 'Cerrar', { duration: 4000 });
+        //this.snackBar.open('Error cargando el usuario', 'Cerrar', { duration: 4000 });
         console.error(err);
       },
     });

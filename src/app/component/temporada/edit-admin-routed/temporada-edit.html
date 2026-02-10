@@ -1,0 +1,105 @@
+<div class="container my-4 edit-form">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="form-card">
+        <header class="mb-4">
+          <h1 class="h3 mb-0">Editar artículo</h1>
+        </header>
+
+        @if (loading()) {
+        <div class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        }
+
+        @if (error()) {
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+        </div>
+        }
+
+        @if (!loading() && !error()) {
+        <form [formGroup]="temporadaForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- ID (solo lectura) -->
+          <div class="mb-4">
+            <label for="id" class="form-label">ID de la temporada</label>
+            <input
+              type="text"
+              class="form-control"
+              id="id"
+              [value]="temporadaId()"
+              disabled
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-4">
+            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="descripcion?.invalid && descripcion?.touched"
+              [class.is-valid]="descripcion?.valid && descripcion?.touched"
+              id="descripcion"
+              formControlName="descripcion"
+              placeholder="Introduce una descripcion a la temporada"
+            />
+            @if (descripcion?.invalid && descripcion?.touched) {
+            <div class="invalid-feedback">
+              @if (descripcion?.errors?.['required']) {
+                <span>La descripción es obligatoria.</span>
+              } @else if (descripcion?.errors?.['minlength']) {
+                <span>La descripción debe tener al menos 3 caracteres.</span>
+              } @else if (descripcion?.errors?.['maxlength']) {
+                <span>La descripción no puede superar 255 caracteres.</span>
+              }
+            </div>
+            }
+          </div>
+
+          <!-- Club -->
+          <div class="mb-4">
+            <label for="club" class="form-label">Club <span class="text-danger">*</span></label>
+            <select
+              id="club"
+              style="cursor: pointer;"
+              class="form-select"
+              [class.is-invalid]="id_club?.invalid && id_club?.touched"
+              [class.is-valid]="id_club?.valid && id_club?.touched"
+              formControlName="id_club"
+            >
+              <option [value]="id_club?.value" selected>{{ temporada()?.club?.nombre }}</option>
+            </select>
+            @if (id_club?.invalid && id_club?.touched) {
+              <div class="invalid-feedback">
+                <span>Debe seleccionar un club.</span>
+              </div>
+            }
+          </div>
+
+          <!-- Botones -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <a [routerLink]="['/temporada']" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left me-2"></i>Cancelar
+            </a>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="submitting() || temporadaForm.invalid"
+            >
+              @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              } @else {
+                <i class="bi bi-check-circle me-2"></i>
+              }
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>

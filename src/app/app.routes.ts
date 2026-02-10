@@ -24,9 +24,9 @@ import { NoticiaPlistAdminRouted } from './component/noticia/plist-admin-routed/
 import { ClubPlistAdminRouted } from './component/club/plist-admin-routed/club-plist';
 import { CuotaPlistAdminRouted } from './component/cuota/plist-admin-routed/cuota-plist';
 import { TipousuarioPlistAdminRouted } from './component/tipousario/plist-admin-routed/tipousuario-plist';
-import { TemporadaPlist } from './component/temporada/plist-admin-routed/temporada-plist';
-import { PlistEquipo } from './component/equipo/equipo-plist';
-import { EquipoViewRouted } from './component/equipo/view-routed/equipo-view';
+import { PlistEquipo } from './component/equipo/plist-admin-routed/equipo-plist';
+import { EquipoViewRouted } from './component/equipo/view-admin-routed/equipo-view';
+import { EquipoDeleteAdminRouted } from './component/equipo/delete-admin-routed/equipo.delete';
 import { CarritoPlistAdminRouted } from './component/carrito/plist-admin-routed/carrito-plist';
 import { ComentarioPlistAdminRouted } from './component/comentario/plist-admin-routed/comentario-plist';
 import { ComentarioViewRouted } from './component/comentario/view-routed/comentario-view';
@@ -49,6 +49,7 @@ import { CategoriaEditAdminRouted } from './component/categoria/edit-admin-route
 import { LigaViewRouted } from './component/liga/view-routed/liga-view';
 import { ComentarioartViewRouted } from './component/comentarioart/view-routed/comentarioart-view';
 import { PagoDeleteAdminRouted } from './component/pago/delete-admin-routed/pago-delete';
+import { TemporadaEditAdminRouted } from './component/temporada/edit-admin-routed/temporada-edit';
 import { PartidoDeleteAdminRouted } from './component/partido/delete-admin-routed/partido-delete';
 import { ClubDeleteAdminRouted } from './component/club/delete-admin-routed/club-delete';
 import { PuntuacionDeleteAdminRouted } from './component/puntuacion/delete-admin-routed/puntuacion-delete';
@@ -59,6 +60,7 @@ import { CarritoDeleteAdminRouted } from './component/carrito/delete-admin-route
 import { ComentarioartDeleteAdminRouted } from './component/comentarioart/delete-admin-routed/delete-admin-routed';
 import { FacturaDeleteAdminRouted } from './component/factura/delete-admin-routed/factura-delete';
 import { TipoarticuloDeleteAdminRouted } from './component/tipoarticulo/delete-admin-routed/delete-admin-routed';
+import { TemporadaPlist } from './component/temporada/plist-admin-routed/temporada-plist';
 
 
 export const routes: Routes = [
@@ -71,6 +73,7 @@ export const routes: Routes = [
     { path: 'usuario/view/:id', component: UsuarioViewRouted},
     { path: 'temporada', component: TemporadaPlist },
     { path: 'temporada/club/:id_club', component: TemporadaPlist },
+    { path: 'temporada/edit/:id', component: TemporadaEditAdminRouted },
     { path: 'temporada/view/:id', component: TemporadaViewAdminRouted },
     { path: 'temporada/delete/:id', component: TemporadaDeleteAdminRouted },
     { path: 'liga', component: LigaPlistAdminRouted },
@@ -128,6 +131,7 @@ export const routes: Routes = [
     { path: 'equipo', component: PlistEquipo },
     { path: 'equipo/categoria/:id_categoria', component: PlistEquipo },
     { path: 'equipo/view/:id', component: EquipoViewRouted },
+    { path: 'equipo/delete/:id', component: EquipoDeleteAdminRouted },
     { path: 'equipo/usuario/:id_usuario', component: PlistEquipo },
     { path: 'carrito', component: CarritoPlistAdminRouted },
     { path: 'carrito/usuario/:id_usuario', component: CarritoPlistAdminRouted },

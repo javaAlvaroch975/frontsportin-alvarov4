@@ -1,119 +1,107 @@
-<div class="container py-3">
+<div class="container my-4 edit-form">
   <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
-      <div class="card border shadow-sm">
-        <div class="card-header bg-warning text-dark py-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 class="h4 mb-1">
-                <i class="bi bi-pencil-square me-2"></i>Editar Categoría
-              </h1>
-              <p class="small mb-0">Modifica los datos de la categoría</p>
-            </div>
-            <a [routerLink]="['/categoria']" class="btn btn-outline-dark btn-sm">
-              <i class="bi bi-arrow-left"></i> Volver
-            </a>
+      <div class="form-card">
+        <header class="mb-4">
+          <h1 class="h3 mb-0">Editar categoría</h1>
+        </header>
+
+        @if (loading()) {
+        <div class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
           </div>
         </div>
-        <div class="card-body p-4">
+        }
 
-          @if (loading) {
-            <div class="d-flex justify-content-center my-5">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-              </div>
-            </div>
-          }
-
-          @if (error && !loading) {
-            <div class="alert alert-danger" role="alert">
-              <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
-            </div>
-          }
-
-          @if (!loading && !error) {
-            <form [formGroup]="categoriaForm" (ngSubmit)="enviarFormulario()" novalidate>
-              <!-- Nombre -->
-              <div class="mb-4">
-                <label for="nombre" class="form-label fw-semibold">
-                  Nombre <span class="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [class.is-invalid]="nombre?.invalid && nombre?.touched"
-                  [class.is-valid]="nombre?.valid && nombre?.touched"
-                  id="nombre"
-                  formControlName="nombre"
-                  placeholder="Introduce el nombre de la categoría"
-                />
-                @if (nombre?.invalid && nombre?.touched) {
-                  <div class="invalid-feedback">
-                    @if (nombre?.errors?.['required']) {
-                      <span>El nombre es obligatorio.</span>
-                    }
-                    @if (nombre?.errors?.['minlength']) {
-                      <span>El nombre debe tener al menos 4 caracteres.</span>
-                    }
-                    @if (nombre?.errors?.['maxlength']) {
-                      <span>El nombre no puede superar 255 caracteres.</span>
-                    }
-                  </div>
-                }
-              </div>
-
-              <!-- Temporada -->
-              <div class="mb-4">
-                <label for="id_temporada" class="form-label fw-semibold">
-                  Temporada <span class="text-danger">*</span>
-                </label>
-                <select
-                  class="form-select"
-                  [class.is-invalid]="id_temporada?.invalid && id_temporada?.touched"
-                  [class.is-valid]="id_temporada?.valid && id_temporada?.touched"
-                  id="id_temporada"
-                  formControlName="id_temporada"
-                >
-                  <option [ngValue]="null" disabled>Selecciona una temporada</option>
-                  @for (temporada of temporadas; track temporada.id) {
-                    <option [ngValue]="temporada.id">
-                      {{ temporada.descripcion }}
-                    </option>
-                  }
-                </select>
-                @if (id_temporada?.invalid && id_temporada?.touched) {
-                  <div class="invalid-feedback">
-                    @if (id_temporada?.errors?.['required']) {
-                      <span>La temporada es obligatoria.</span>
-                    }
-                  </div>
-                }
-                <small class="form-text text-muted">
-                  Selecciona la temporada a la que pertenece esta categoría
-                </small>
-              </div>
-
-              <!-- Botones -->
-              <div class="d-flex gap-2 justify-content-end mt-4">
-                <a [routerLink]="['/categoria']" class="btn btn-secondary">
-                  <i class="bi bi-x-circle me-1"></i>Cancelar
-                </a>
-                <button
-                  type="submit"
-                  class="btn btn-warning"
-                  [disabled]="submitting || categoriaForm.invalid"
-                >
-                  @if (submitting) {
-                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                    Guardando...
-                  } @else {
-                    <i class="bi bi-save me-1"></i>Guardar Cambios
-                  }
-                </button>
-              </div>
-            </form>
-          }
+        @if (error()) {
+        <div class="alert alert-danger" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
         </div>
+        }
+
+        @if (!loading() && !error()) {
+        <form [formGroup]="categoriaForm" (ngSubmit)="onSubmit()" novalidate>
+          <!-- ID (solo lectura) -->
+          <div class="mb-4">
+            <label for="id" class="form-label">ID de la categoría</label>
+            <input
+              type="text"
+              class="form-control"
+              id="id"
+              formControlName="id"
+              readonly
+            />
+          </div>
+
+          <!-- Nombre -->
+          <div class="mb-4">
+            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="nombre?.invalid && nombre?.touched"
+              [class.is-valid]="nombre?.valid && nombre?.touched"
+              id="nombre"
+              formControlName="nombre"
+              placeholder="Introduce el nombre de la categoría"
+            />
+            @if (nombre?.invalid && nombre?.touched) {
+            <div class="invalid-feedback">
+              @if (nombre?.errors?.['required']) {
+                <span>El nombre es obligatorio.</span>
+              }
+              @if (nombre?.errors?.['minlength']) {
+                <span>El nombre debe tener al menos 4 caracteres.</span>
+              }
+              @if (nombre?.errors?.['maxlength']) {
+                <span>El nombre no puede superar 255 caracteres.</span>
+              }
+            </div>
+            }
+          </div>
+
+          <!-- Temporada -->
+          <div class="mb-4">
+            <label for="temporada" class="form-label">Temporada <span class="text-danger">*</span></label>
+            <select
+              id="temporada"
+              style="cursor: pointer;"
+              class="form-select"
+              [class.is-invalid]="id_temporada?.invalid && id_temporada?.touched"
+              [class.is-valid]="id_temporada?.valid && id_temporada?.touched"
+              formControlName="id_temporada"
+            >
+              <option [value]="null" disabled>Selecciona una temporada</option>
+              @for (temporada of temporadas(); track temporada.id) {
+                <option [value]="temporada.id">{{ temporada.descripcion }}</option>
+              }
+            </select>
+            @if (id_temporada?.invalid && id_temporada?.touched) {
+            <div class="invalid-feedback">
+              <span>Debe seleccionar una temporada.</span>
+            </div>
+            }
+          </div>
+
+          <!-- Botones -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <a [routerLink]="['/categoria']" class="btn btn-outline-secondary">
+              Cancelar
+            </a>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="submitting() || categoriaForm.invalid"
+            >
+              @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              }
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+        }
       </div>
     </div>
   </div>

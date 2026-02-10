@@ -3,14 +3,14 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Paginacion } from '../shared/paginacion/paginacion';
-import { BotoneraRpp } from '../shared/botonera-rpp/botonera-rpp';
-import { TrimPipe } from '../../pipe/trim-pipe';
+import { Paginacion } from '../../shared/paginacion/paginacion';
+import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
+import { TrimPipe } from '../../../pipe/trim-pipe';
 
-import { EquipoService } from '../../service/equipo';
-import { debounceTimeSearch } from '../../environment/environment';
-import { IPage } from '../../model/plist';
-import { IEquipo } from '../../model/equipo';
+import { EquipoService } from '../../../service/equipo';
+import { debounceTimeSearch } from '../../../environment/environment';
+import { IPage } from '../../../model/plist';
+import { IEquipo } from '../../../model/equipo';
 
 @Component({
   selector: 'app-plist-equipo',
@@ -44,7 +44,7 @@ export class PlistEquipo {
   constructor(
     private oEquipoService: EquipoService,
     private route: ActivatedRoute,
-  ) {}
+  ) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id_categoria');

@@ -1,0 +1,10 @@
+/* Dialog de selección de tipo de artículo */
+.tipoarticulo-dialog .mat-mdc-dialog-container {
+	padding: 16px;
+	box-sizing: border-box;
+}
+
+.tipoarticulo-dialog .mat-mdc-dialog-content {
+	padding: 0;
+    margin: 50px;
+}
