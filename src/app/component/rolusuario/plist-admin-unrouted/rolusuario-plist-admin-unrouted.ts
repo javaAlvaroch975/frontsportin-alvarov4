@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, Input } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
@@ -18,7 +18,8 @@ import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
   templateUrl: './rolusuario-plist-admin-unrouted.html',
   styleUrl: './rolusuario-plist-admin-unrouted.css',
 })
-export class RolusuarioPlist {
+export class RolusuarioPlistUnrouted {
+
   oPage = signal<IPage<IRolusuario> | null>(null);
   numPage = signal<number>(0);
   numRpp = signal<number>(5);
