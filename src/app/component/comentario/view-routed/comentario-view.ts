@@ -3,15 +3,17 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ComentarioService } from '../../../service/comentario';
+import { ComentarioDetailAdminUnrouted } from '../detail-admin-unrouted/comentario-detail';
 import { IComentario } from '../../../model/comentario';
 
 @Component({
 	selector: 'app-comentario-view',
-	imports: [CommonModule, RouterLink],
+	imports: [CommonModule, RouterLink, ComentarioDetailAdminUnrouted],
 	templateUrl: './comentario-view.html',
 	styleUrl: './comentario-view.css',
 })
 export class ComentarioViewRouted implements OnInit {
+		id_comentario = signal<number>(0);
 	private route = inject(ActivatedRoute);
 	private oComentarioService = inject(ComentarioService);
 
@@ -27,6 +29,7 @@ export class ComentarioViewRouted implements OnInit {
 			this.loading.set(false);
 			return;
 		}
+		this.id_comentario.set(id);
 		this.load(id);
 	}
 

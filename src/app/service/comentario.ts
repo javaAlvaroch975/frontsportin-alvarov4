@@ -58,4 +58,7 @@ export class ComentarioService {
     update(comentario: Partial<IComentario>): Observable<number> {
         return this.oHttp.put<number>(serverURL + '/comentario', comentario);
     }
+    delete(id: number): Observable<number> {
+        return this.oHttp.delete<number>(`${this.URL}/${id}`);
+    }
 }

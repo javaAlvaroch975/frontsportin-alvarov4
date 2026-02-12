@@ -1,0 +1,107 @@
+<div class="container my-4 edit-form">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="form-card">
+                <header class="mb-4">
+                    <h1 class="h3 mb-0">Editar tipo de artículo</h1>
+                </header>
+
+                @if (loading()) {
+                <div class="d-flex justify-content-center my-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                }
+
+                @if (error()) {
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+                </div>
+                }
+
+                @if (!loading() && !error()) {
+                <form [formGroup]="tipoarticuloForm" (ngSubmit)="onSubmit()" novalidate>
+                    <!-- ID (solo lectura) -->
+                    <div class="mb-4">
+                        <label for="id" class="form-label">ID del tipo</label>
+                        <input type="text" class="form-control" id="id" formControlName="id" readonly />
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="descripcion" class="form-label">Descripción <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control"
+                            [class.is-invalid]="descripcion?.invalid && descripcion?.touched"
+                            [class.is-valid]="descripcion?.valid && descripcion?.touched" id="descripcion"
+                            formControlName="descripcion" placeholder="Introduce la descripción" />
+                        @if (descripcion?.invalid && descripcion?.touched) {
+                        <div class="invalid-feedback">
+                            @if (descripcion?.errors?.['required']) {
+                            <span>La descripción es obligatoria.</span>
+                            }
+                            @if (descripcion?.errors?.['minlength']) {
+                            <span>La descripción debe tener al menos 3 caracteres.</span>
+                            }
+                            @if (descripcion?.errors?.['maxlength']) {
+                            <span>La descripción no puede superar 255 caracteres.</span>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Sección: Club -->
+                    <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+                        <div class="mb-4">
+                            <label for="id_club" class="form-label">Club <span class="text-danger">*</span></label>
+                            <select id="id_club" style="cursor: pointer" class="form-select"
+                                [class.is-invalid]="id_club?.invalid && id_club?.touched"
+                                [class.is-valid]="id_club?.valid && id_club?.touched" formControlName="id_club">
+                                <option [value]="null" disabled>Selecciona un club</option>
+                                @for (club of clubs(); track club.id) {
+                                <option [value]="club.id">{{ club.nombre }}</option>
+                                }
+                            </select>
+                            @if (id_club?.invalid && id_club?.touched) {
+                            <div class="invalid-feedback">
+                                <span>Debe seleccionar un club.</span>
+                            </div>
+                            }
+                        </div>
+
+                        <div class="d-flex gap-3 align-items-end">
+                            <div>
+                                <label for="display_id_club" class="form-label">ID Club</label>
+                                <input type="text" class="form-control" id="display_id_club"
+                                    [value]="displayIdClub() || ''" readonly />
+                            </div>
+                            @if (selectedClub()) {
+                            <div class="flex-grow-1">
+                                <label class="form-label">Nombre del Club</label>
+                                <p class="form-control-plaintext fw-semibold mb-0">
+                                    {{ selectedClub()?.nombre }}
+                                </p>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a (click)="doCancel()" class="btn btn-outline-secondary" style="cursor: pointer;"> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="submitting() || tipoarticuloForm.invalid">
+                            @if (submitting()) {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -26,13 +26,13 @@ export class TipoarticuloDeleteAdminRouted {
       this.error.set('ID no válido');
       this.loading.set(false);
       return;
-    }    
+    }
   }
 
   doDelete() {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.idTipoarticulo.set(idParam ? Number(idParam) : NaN);
-    
+
     this.oTipoarticuloService.delete(this.idTipoarticulo()).subscribe({
       next: () => {
         this.snackBar.open('Tipo de articulo eliminado', 'Cerrar', { duration: 4000 });
@@ -44,8 +44,8 @@ export class TipoarticuloDeleteAdminRouted {
       },
     });
   }
-  
-  doCancel() {    
+
+  doCancel() {
     window.history.back();
   }
 }

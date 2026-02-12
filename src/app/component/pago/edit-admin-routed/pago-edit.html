@@ -1,0 +1,114 @@
+<div class="container my-4 edit-form">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="form-card">
+                <header class="mb-4">
+                    <h1 class="h3 mb-0">Editar pago</h1>
+                </header>
+
+                @if (loading()) {
+                <div class="d-flex justify-content-center my-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                }
+
+                @if (error()) {
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ error() }}
+                </div>
+                }
+
+                @if (!loading() && !error()) {
+                <form [formGroup]="pagoForm" (ngSubmit)="onSubmit()" novalidate>
+                    <!-- ID (solo lectura) -->
+                    <div class="mb-4">
+                        <label for="id" class="form-label">ID del pago</label>
+                        <input type="text" class="form-control" id="id" formControlName="id" readonly />
+                    </div>
+
+                    <!-- Abonado -->
+                    <div class="mb-4">
+                        <label for="abonado" class="form-label">Abonado <span class="text-danger">*</span></label>
+                        <input type="number" min="0" max="1" step="1" class="form-control"
+                            [class.is-invalid]="abonado?.invalid && abonado?.touched"
+                            [class.is-valid]="abonado?.valid && abonado?.touched" id="abonado" formControlName="abonado"
+                            placeholder="0 o 1" />
+                        @if (abonado?.invalid && abonado?.touched) {
+                        <div class="invalid-feedback">
+                            <span>La cantidad abonada es obligatoria y debe ser mayor o igual a 0.</span>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="mb-4">
+                        <label for="fecha" class="form-label">Fecha <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control"
+                            [class.is-invalid]="fecha?.invalid && fecha?.touched"
+                            [class.is-valid]="fecha?.valid && fecha?.touched" id="fecha" formControlName="fecha" />
+                        @if (fecha?.invalid && fecha?.touched) {
+                        <div class="invalid-feedback">
+                            <span>La fecha es obligatoria.</span>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Sección: Cuota -->
+                    <div class="p-4 rounded mb-4" style="background-color: #f8f9fa; border-left: 4px solid #198754;">
+                        <label class="form-label fw-bold mb-3">Información de la Cuota</label>
+                        <div class="d-flex gap-3 align-items-end">
+                            <div style="width: 100px;">
+                                <label for="display_id_cuota" class="form-label">ID Cuota</label>
+                                <input type="text" class="form-control" id="display_id_cuota"
+                                    [value]="displayIdCuota() || ''" readonly />
+                            </div>
+                            @if (oCuota()) {
+                            <div class="flex-grow-1">
+                                <label class="form-label">Descripción</label>
+                                <p class="form-control-plaintext fw-semibold mb-0">
+                                    {{ oCuota()?.descripcion }} ({{ oCuota()?.cantidad }}€)
+                                </p>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Sección: Jugador -->
+                    <div class="p-4 rounded mb-4" style="background-color: #f8f9fa; border-left: 4px solid #ffc107;">
+                        <label class="form-label fw-bold mb-3">Información del Jugador</label>
+                        <div class="d-flex gap-3 align-items-end">
+                            <div style="width: 100px;">
+                                <label for="display_id_jugador" class="form-label">ID Jugador</label>
+                                <input type="text" class="form-control" id="display_id_jugador"
+                                    [value]="displayIdJugador() || ''" readonly />
+                            </div>
+                            @if (oJugador()) {
+                            <div class="flex-grow-1">
+                                <label class="form-label">Nombre del Jugador</label>
+                                <p class="form-control-plaintext fw-semibold mb-0">
+                                    {{ oJugador()?.usuario?.nombre }} {{ oJugador()?.usuario?.apellido1 }}
+                                </p>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a (click)="doCancel()" class="btn btn-outline-secondary" style="cursor: pointer;"> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary" [disabled]="submitting() || pagoForm.invalid">
+                            @if (submitting()) {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            }
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
