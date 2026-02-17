@@ -68,17 +68,27 @@
             </a>
           </td>
           <td class="text-center">
-            <div class="btn-group btn-group-sm">
-              <a class="btn btn-primary" [routerLink]="['/comentarioart/view', comentario?.id]" title="Ver">
-                <i class="bi bi-eye"></i>
-              </a>
-              <a class="btn btn-warning" [routerLink]="['/comentarioart/edit', comentario?.id]" title="Editar">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <a class="btn btn-danger" [routerLink]="['/comentarioart/delete', comentario?.id]" title="Eliminar">
-                <i class="bi bi-trash"></i>
-              </a>
-            </div>
+            @if (isDialogMode()) {
+              <button
+                class="btn btn-success btn-sm"
+                (click)="onSelect(comentario)"
+                title="Seleccionar"
+              >
+                <i class="bi bi-check-circle" aria-hidden="true"></i> Seleccionar
+              </button>
+            } @else {
+              <div class="btn-group btn-group-sm">
+                <a class="btn btn-primary" [routerLink]="['/comentarioart/view', comentario?.id]" title="Ver">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a class="btn btn-warning" [routerLink]="['/comentarioart/edit', comentario?.id]" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <a class="btn btn-danger" [routerLink]="['/comentarioart/delete', comentario?.id]" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
+            }
           </td>
         </tr>
       }

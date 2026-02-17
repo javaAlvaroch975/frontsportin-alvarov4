@@ -4,10 +4,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { NoticiaService } from '../../../service/noticia';
 import { INoticia } from '../../../model/noticia';
 import { IClub } from '../../../model/club';
 import { ClubService } from '../../../service/club';
+import { ClubPlistAdminUnrouted } from '../../club/plist-admin-unrouted/club-plist-admin-unrouted';
 
 @Component({
   selector: 'app-noticia-edit-routed',
@@ -32,7 +34,7 @@ export class NoticiaEditAdminRouted implements OnInit {
   selectedClub = signal<IClub | null>(null);
   displayIdClub = signal<number | null>(null);
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -69,7 +71,9 @@ export class NoticiaEditAdminRouted implements OnInit {
 
     this.noticiaForm.get('id_club')?.valueChanges.subscribe((id) => {
       if (id) {
-        this.loadClub(id);
+        // Convertir a número si viene como string del select
+        const idNumero = typeof id === 'string' ? parseInt(id, 10) : id;
+        this.loadClub(idNumero);
       } else {
         this.selectedClub.set(null);
         this.displayIdClub.set(null);
@@ -191,7 +195,28 @@ export class NoticiaEditAdminRouted implements OnInit {
   }
 
   openClubFinderModal(): void {
-    // Finder modal removed: use desplegable de clubs
-    return;
+    const dialogRef = this.dialog.open(ClubPlistAdminUnrouted, {
+      height: '800px',
+      width: '1300px',
+      maxWidth: '95vw',
+      panelClass: 'club-dialog',
+      data: {
+        title: 'Aqui elegir club',
+        message: 'Plist finder para encontrar el club y asignarlo a la noticia',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((club: IClub | null) => {
+      if (club) {
+        this.noticiaForm.patchValue({
+          id_club: club.id,
+        });
+        // Sincronizar explícitamente después de seleccionar desde el modal
+        this.syncClub(club.id);
+        this.snackBar.open(`Club seleccionado: ${club.nombre}`, 'Cerrar', {
+          duration: 3000,
+        });
+      }
+    });
   }
 }

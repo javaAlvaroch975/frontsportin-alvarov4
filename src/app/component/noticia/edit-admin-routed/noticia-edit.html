@@ -101,29 +101,57 @@
               />
             </div>
 
-            <!-- Club (desplegable) -->
-            <div class="mb-4">
-              <label for="id_club" class="form-label"
-                >Club <span class="text-danger">*</span></label
-              >
-              <select
-                id="id_club"
-                style="cursor: pointer"
-                class="form-select"
-                [class.is-invalid]="id_club?.invalid && id_club?.touched"
-                [class.is-valid]="id_club?.valid && id_club?.touched"
-                formControlName="id_club"
-              >
-                <option [value]="null" disabled>Selecciona un club</option>
-                @for (c of clubes(); track c.id) {
-                  <option [value]="c.id">{{ c.nombre }}</option>
+            <!-- Sección: Club -->
+            <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+              <!-- Club Dropdown -->
+              <div class="mb-4">
+                <label for="id_club" class="form-label"
+                  >Club <span class="text-danger">*</span></label
+                >
+                <select
+                  id="id_club"
+                  style="cursor: pointer"
+                  class="form-select"
+                  [class.is-invalid]="id_club?.invalid && id_club?.touched"
+                  [class.is-valid]="id_club?.valid && id_club?.touched"
+                  formControlName="id_club"
+                >
+                  <option [value]="null" disabled>Selecciona un club</option>
+                  @for (c of clubes(); track c.id) {
+                    <option [value]="c.id">{{ c.nombre }}</option>
+                  }
+                </select>
+                @if (id_club?.invalid && id_club?.touched) {
+                  <div class="invalid-feedback">
+                    <span>Debe seleccionar un club.</span>
+                  </div>
                 }
-              </select>
-              @if (id_club?.invalid && id_club?.touched) {
-                <div class="invalid-feedback">
-                  <span>Debe seleccionar un club.</span>
+              </div>
+
+              <!-- Buscador, ID y Nombre en una línea -->
+              <div class="d-flex gap-3 align-items-end">
+                <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
+                  <i class="bi bi-search me-2"></i>Buscar
+                </button>
+                <div>
+                  <label for="display_id_club" class="form-label">ID Club</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="display_id_club"
+                    [value]="displayIdClub() || ''"
+                    readonly
+                  />
                 </div>
-              }
+                @if (selectedClub()) {
+                  <div class="flex-grow-1">
+                    <label class="form-label">Nombre</label>
+                    <p class="form-control-plaintext fw-semibold mb-0">
+                      {{ selectedClub()?.nombre }}
+                    </p>
+                  </div>
+                }
+              </div>
             </div>
 
             <!-- Botones -->

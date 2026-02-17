@@ -38,7 +38,7 @@ import { PuntuacionViewRouted } from './component/puntuacion/view-routed/puntuac
 import { PuntuacionEditAdminRouted } from './component/puntuacion/edit-admin-routed/puntuacion-edit';
 import { NoticiaViewAdminRouted } from './component/noticia/view-admin-routed/view-admin-routed';
 import { FacturaViewAdminRouted } from './component/factura/view-admin-routed/factura-view';
-import { ComentarioartPlistAdminRouted } from './component/comentarioart/comentarioart-plist';
+import { ComentarioartPlistAdminRouted } from './component/comentarioart/plist-admin-routed/comentarioart-plist';
 import { TemporadaViewAdminRouted } from './component/temporada/view-admin-routed/temporada-view';
 import { TemporadaDeleteAdminRouted } from './component/temporada/delete-admin-routed/temporada-delete';
 import { PagoViewAdminRouted } from './component/pago/view-admin-routed/pago-view';
