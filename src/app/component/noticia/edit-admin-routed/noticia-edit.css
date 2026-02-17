@@ -1,0 +1,8 @@
+/* Estilos para el modal de club */
+::ng-deep .club-dialog .mat-mdc-dialog-container {
+  padding: 20px 30px;
+}
+
+::ng-deep .club-dialog .mat-mdc-dialog-surface {
+  padding: 20px 30px;
+}

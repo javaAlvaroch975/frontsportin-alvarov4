@@ -1,15 +1,16 @@
-import { Component, signal, computed } from '@angular/core';
-import { IPage } from '../../model/plist';
+import { Component, signal, computed, inject } from '@angular/core';
+import { IPage } from '../../../model/plist';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Paginacion } from '../shared/paginacion/paginacion';
-import { BotoneraRpp } from '../shared/botonera-rpp/botonera-rpp';
-import { TrimPipe } from '../../pipe/trim-pipe';
+import { Paginacion } from '../../shared/paginacion/paginacion';
+import { BotoneraRpp } from '../../shared/botonera-rpp/botonera-rpp';
+import { TrimPipe } from '../../../pipe/trim-pipe';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { debounceTimeSearch } from '../../environment/environment';
-import { ComentarioartService } from '../../service/comentarioart';
-import { IComentarioart } from '../../model/comentarioart';
+import { debounceTimeSearch } from '../../../environment/environment';
+import { ComentarioartService } from '../../../service/comentarioart';
+import { IComentarioart } from '../../../model/comentarioart';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-comentarioart-plist',
@@ -47,9 +48,9 @@ export class ComentarioartPlistAdminRouted {
   private searchSubject = new Subject<string>();
   private searchSubscription?: Subscription;
 
-  constructor(private oComentarioartService: ComentarioartService, private route: ActivatedRoute) {
+  private dialogRef = inject(MatDialogRef<ComentarioartPlistAdminRouted>, { optional: true });
 
-  }
+  constructor(private oComentarioartService: ComentarioartService, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -147,6 +148,14 @@ export class ComentarioartPlistAdminRouted {
   onSearchContenido(value: string) {
     // Emitir el valor al Subject para que sea procesado con debounce
     this.searchSubject.next(value);
+  }
+
+  isDialogMode(): boolean {
+    return !!this.dialogRef;
+  }
+
+  onSelect(comentario: IComentarioart): void {
+    this.dialogRef?.close(comentario);
   }
 
   getArticuloId(comentario: IComentarioart | null | undefined): number | null {
