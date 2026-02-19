@@ -9,6 +9,7 @@ import { TrimPipe } from "../../../pipe/trim-pipe";
 import { DatetimePipe } from "../../../pipe/datetime-pipe";
 import { BotoneraRpp } from "../../shared/botonera-rpp/botonera-rpp";
 import { Paginacion } from "../../shared/paginacion/paginacion";
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-plist-admin-unrouted',
@@ -28,6 +29,8 @@ export class FacturaPlistAdminUnrouted {
 
   usuario = signal<number>(0);
 
+
+  private dialogRef = inject(MatDialogRef<FacturaPlistAdminUnrouted>, { optional: true });
 
   constructor(
     private oFacturaService: FacturaService, private cdr: ChangeDetectorRef, private route: ActivatedRoute
@@ -90,6 +93,14 @@ export class FacturaPlistAdminUnrouted {
     this.getPage();
   this.cdr.detectChanges();
     return false;
+  }
+
+  isDialogMode(): boolean {
+    return !!this.dialogRef;
+  }
+
+  onSelect(factura: IFactura): void {
+    this.dialogRef?.close(factura);
   }
 
 }

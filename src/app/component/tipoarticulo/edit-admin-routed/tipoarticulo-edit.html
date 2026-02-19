@@ -24,8 +24,14 @@
                 <form [formGroup]="tipoarticuloForm" (ngSubmit)="onSubmit()" novalidate>
                     <!-- ID (solo lectura) -->
                     <div class="mb-4">
-                        <label for="id" class="form-label">ID del tipo</label>
-                        <input type="text" class="form-control" id="id" formControlName="id" readonly />
+                        <label for="id" class="form-label">ID de la temporada</label>
+                        <input
+                        type="text"
+                        class="form-control"
+                        id="id"
+                        [value]="id_tipoarticulo()"
+                        disabled
+                        />
                     </div>
 
                     <!-- Descripción -->
@@ -53,43 +59,55 @@
 
                     <!-- Sección: Club -->
                     <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+                        <!-- Club -->
                         <div class="mb-4">
-                            <label for="id_club" class="form-label">Club <span class="text-danger">*</span></label>
-                            <select id="id_club" style="cursor: pointer" class="form-select"
-                                [class.is-invalid]="id_club?.invalid && id_club?.touched"
-                                [class.is-valid]="id_club?.valid && id_club?.touched" formControlName="id_club">
-                                <option [value]="null" disabled>Selecciona un club</option>
-                                @for (club of clubs(); track club.id) {
-                                <option [value]="club.id">{{ club.nombre }}</option>
-                                }
-                            </select>
-                            @if (id_club?.invalid && id_club?.touched) {
+                        <label for="club" class="form-label">Club <span class="text-danger">*</span></label>
+                        <input
+                            id="club"
+                            type="text"
+                            class="form-control"
+                            [class.is-invalid]="id_club?.invalid && id_club?.touched"
+                            [class.is-valid]="id_club?.valid && id_club?.touched"
+                            [value]="selectedClub()?.nombre"
+                            readonly
+                        />
+                        @if (id_club?.invalid && id_club?.touched) {
                             <div class="invalid-feedback">
-                                <span>Debe seleccionar un club.</span>
+                            <span>Debe seleccionar un club.</span>
                             </div>
-                            }
+                        }
                         </div>
 
+                        <!-- Buscador, ID y Descripción en una línea -->
                         <div class="d-flex gap-3 align-items-end">
-                            <div>
-                                <label for="display_id_club" class="form-label">ID Club</label>
-                                <input type="text" class="form-control" id="display_id_club"
-                                    [value]="displayIdClub() || ''" readonly />
+                        <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
+                            <i class="bi bi-search me-2"></i>Buscar
+                        </button>
+                        <div>
+                            <label for="display_id_club" class="form-label">ID Club</label>
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="display_id_club"
+                            [value]="id_club?.value"
+                            formControlName="id_club"
+                            readonly
+                            />
+                        </div>
+                        @if (selectedClub()) {
+                            <div class="grow">
+                            <label class="form-label">Dirección</label>
+                            <p class="form-control-plaintext fw-semibold mb-0">
+                                {{ selectedClub()?.direccion }}
+                            </p>
                             </div>
-                            @if (selectedClub()) {
-                            <div class="flex-grow-1">
-                                <label class="form-label">Nombre del Club</label>
-                                <p class="form-control-plaintext fw-semibold mb-0">
-                                    {{ selectedClub()?.nombre }}
-                                </p>
-                            </div>
-                            }
+                        }
                         </div>
                     </div>
 
                     <!-- Botones -->
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <a (click)="doCancel()" class="btn btn-outline-secondary" style="cursor: pointer;"> Cancelar
+                        <a [href]="['/tipoarticulo']" class="btn btn-outline-secondary" style="cursor: pointer;"> Cancelar
                         </a>
                         <button type="submit" class="btn btn-primary"
                             [disabled]="submitting() || tipoarticuloForm.invalid">

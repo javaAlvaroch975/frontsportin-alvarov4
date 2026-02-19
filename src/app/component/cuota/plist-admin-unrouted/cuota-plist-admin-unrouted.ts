@@ -12,6 +12,7 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { debounceTimeSearch } from '../../../environment/environment';
 import { BotoneraActionsPlist } from '../../shared/botonera-actions-plist/botonera-actions-plist';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cuota-plist-admin-unrouted',
@@ -48,6 +49,7 @@ export class CuotaPlistAdminUnrouted {
 
   private oCuotaService = inject(CuotaService);
   private route = inject(ActivatedRoute);
+  private dialogRef = inject(MatDialogRef<CuotaPlistAdminUnrouted>, { optional: true });
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id_equipo');
@@ -126,5 +128,13 @@ export class CuotaPlistAdminUnrouted {
 
   onSearchDescription(value: string) {
     this.searchSubject.next(value);
+  }
+
+  isDialogMode(): boolean {
+    return !!this.dialogRef;
+  }
+
+  onSelect(cuota: ICuota): void {
+    this.dialogRef?.close(cuota);
   }
 }

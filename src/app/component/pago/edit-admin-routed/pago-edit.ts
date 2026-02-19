@@ -4,17 +4,20 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { PagoService } from '../../../service/pago';
 import { CuotaService } from '../../../service/cuota';
 import { JugadorService } from '../../../service/jugador-service';
 import { IPago } from '../../../model/pago';
 import { ICuota } from '../../../model/cuota';
 import { IJugador } from '../../../model/jugador';
+import { CuotaPlistAdminUnrouted } from '../../cuota/plist-admin-unrouted/cuota-plist-admin-unrouted';
+import { JugadorPlistAdminUnrouted } from '../../jugador/plist-admin-unrouted/jugador-plist-admin-unrouted';
 
 @Component({
   selector: 'app-pago-edit-admin-routed',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './pago-edit.html',
   styleUrl: './pago-edit.css',
 })
@@ -26,97 +29,181 @@ export class PagoEditAdminRouted implements OnInit {
   private oCuotaService = inject(CuotaService);
   private oJugadorService = inject(JugadorService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   pagoForm!: FormGroup;
-  id_pago = signal<number>(0);
-  loading = signal(true);
+  pagoId = signal<number | null>(null);
+  loading = signal<boolean>(true);
   error = signal<string | null>(null);
-  submitting = signal(false);
-
-  oCuota = signal<ICuota | null>(null);
-  oJugador = signal<IJugador | null>(null);
+  submitting = signal<boolean>(false);
+  pago = signal<IPago | null>(null);
   
-  displayIdCuota = signal<number | null>(null);
-  displayIdJugador = signal<number | null>(null);
+  selectedCuota = signal<ICuota | null>(null);
+  selectedJugador = signal<IJugador | null>(null);
 
   ngOnInit(): void {
     this.initForm();
-    const idParam = this.route.snapshot.paramMap.get('id');
-
-    if (!idParam || idParam === '0') {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.pagoId.set(+id);
+      this.getPago(+id);
+    } else {
       this.error.set('ID de pago no válido');
       this.loading.set(false);
-      return;
     }
-
-    this.id_pago.set(Number(idParam));
-
-    if (isNaN(this.id_pago())) {
-      this.error.set('ID no válido');
-      this.loading.set(false);
-      return;
-    }
-
-    this.loadPago();
   }
 
-  private initForm(): void {
+  initForm(): void {
     this.pagoForm = this.fb.group({
-      id: [{ value: 0, disabled: true }],
       abonado: [false],
       fecha: ['', [Validators.required]],
       id_cuota: [null, [Validators.required]],
       id_jugador: [null, [Validators.required]],
     });
-
-    this.pagoForm.get('id_cuota')?.valueChanges.subscribe((id) => {
-      if (id) this.syncCuota(id);
-    });
-
-    this.pagoForm.get('id_jugador')?.valueChanges.subscribe((id) => {
-      if (id) this.syncJugador(id);
-    });
   }
 
-  private loadPago(): void {
-    this.oPagoService.get(this.id_pago()).subscribe({
-      next: (pago: IPago) => {
+  getPago(id: number): void {
+    this.oPagoService.get(id).subscribe({
+      next: (data: IPago) => {
+        this.pago.set(data);
+        this.syncCuota(data.cuota.id);
+        this.syncJugador(data.jugador.id);
         this.pagoForm.patchValue({
-          id: pago.id,
-          abonado: !!pago.abonado,
-          // si viene con ISO completo, nos quedamos con YYYY-MM-DD para <input type="date">
-          fecha: pago.fecha ? pago.fecha.substring(0, 10) : '',
-          id_cuota: pago.cuota?.id,
-          id_jugador: pago.jugador?.id,
+          abonado: !!data.abonado,
+          fecha: data.fecha ? data.fecha.substring(0, 10) : '',
+          id_cuota: data.cuota.id,
+          id_jugador: data.jugador.id,
         });
-
-        if (pago.cuota) this.syncCuota(pago.cuota.id);
-        if (pago.jugador) this.syncJugador(pago.jugador.id);
-
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.error.set('Error cargando el pago');
-        this.snackBar.open('Error cargando el pago', 'Cerrar', { duration: 4000 });
-        console.error(err);
+        this.error.set('Error al cargar el registro');
         this.loading.set(false);
+        console.error(err);
+      },
+    });
+  }
+
+  onSubmit(): void {
+    if (!this.pagoForm.valid || !this.pagoId()) {
+      this.pagoForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting.set(true);
+    
+    const fechaForm: string = this.pagoForm.value.fecha;
+    const fechaLocalDateTime = fechaForm
+      ? (fechaForm.length > 10
+          ? fechaForm.replace('T', ' ')
+          : `${fechaForm} 00:00:00`)
+      : null;
+
+    const payload = {
+      id: this.pagoId()!,
+      abonado: this.pagoForm.value.abonado ? 1 : 0,
+      fecha: fechaLocalDateTime,
+      cuota: {
+        id: Number(this.pagoForm.value.id_cuota),
+      },
+      jugador: {
+        id: Number(this.pagoForm.value.id_jugador),
+      },
+    } as unknown as Partial<IPago> & { cuota?: Partial<ICuota>; jugador?: Partial<IJugador> };
+
+    this.oPagoService.update(payload).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        // mark form as pristine so canDeactivate guard won't ask confirmation
+        if (this.pagoForm) {
+          this.pagoForm.markAsPristine();
+        }
+        // inform the user
+        this.snackBar.open('Se ha guardado correctamente', 'Cerrar', { duration: 3000 });
+        this.router.navigate(['/pago']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.submitting.set(false);
+        this.error.set('Error al guardar el registro');
+        this.snackBar.open('Error al guardar el registro', 'Cerrar', { duration: 4000 });
+        console.error(err);
       },
     });
   }
 
   private syncCuota(idCuota: number): void {
-    this.displayIdCuota.set(idCuota);
     this.oCuotaService.get(idCuota).subscribe({
-      next: (cuota) => this.oCuota.set(cuota),
-      error: () => this.oCuota.set(null)
+      next: (cuota: ICuota) => {
+        this.selectedCuota.set(cuota);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error al sincronizar cuota:', err);
+        this.snackBar.open('Error al cargar la cuota seleccionada', 'Cerrar', { duration: 3000 });
+      },
     });
   }
 
   private syncJugador(idJugador: number): void {
-    this.displayIdJugador.set(idJugador);
     this.oJugadorService.getById(idJugador).subscribe({
-      next: (jugador) => this.oJugador.set(jugador),
-      error: () => this.oJugador.set(null)
+      next: (jugador: IJugador) => {
+        this.selectedJugador.set(jugador);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error al sincronizar jugador:', err);
+        this.snackBar.open('Error al cargar el jugador seleccionado', 'Cerrar', { duration: 3000 });
+      },
+    });
+  }
+
+  openCuotaFinderModal(): void {
+    const dialogRef = this.dialog.open(CuotaPlistAdminUnrouted, {
+      height: '800px',
+      width: '1100px',
+      maxWidth: '95vw',
+      panelClass: 'cuota-dialog',
+      data: {
+        title: 'Seleccionar cuota',
+        message: 'Busque y seleccione la cuota para este pago',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((cuota: ICuota | null) => {
+      if (cuota) {
+        this.pagoForm.patchValue({
+          id_cuota: cuota.id,
+        });
+        // Sincronizar explícitamente después de seleccionar desde el modal
+        this.syncCuota(cuota.id);
+        this.snackBar.open(`Cuota seleccionada: ${cuota.descripcion}`, 'Cerrar', {
+          duration: 3000,
+        });
+      }
+    });
+  }
+
+  openJugadorFinderModal(): void {
+    const dialogRef = this.dialog.open(JugadorPlistAdminUnrouted, {
+      height: '800px',
+      width: '1100px',
+      maxWidth: '95vw',
+      panelClass: 'jugador-dialog',
+      data: {
+        title: 'Seleccionar jugador',
+        message: 'Busque y seleccione el jugador para este pago',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((jugador: IJugador | null) => {
+      if (jugador) {
+        this.pagoForm.patchValue({
+          id_jugador: jugador.id,
+        });
+        // Sincronizar explícitamente después de seleccionar desde el modal
+        this.syncJugador(jugador.id);
+        this.snackBar.open(`Jugador seleccionado: ${jugador.usuario?.nombre} ${jugador.usuario?.apellido1}`, 'Cerrar', {
+          duration: 3000,
+        });
+      }
     });
   }
 
@@ -134,57 +221,5 @@ export class PagoEditAdminRouted implements OnInit {
 
   get id_jugador() {
     return this.pagoForm.get('id_jugador');
-  }
-
-  onSubmit(): void {
-    // Marcar todos los campos como tocados para activar las validaciones
-    this.pagoForm.markAllAsTouched();
-    
-    if (this.pagoForm.invalid) {
-      this.snackBar.open('Por favor, complete todos los campos correctamente', 'Cerrar', {
-        duration: 4000,
-      });
-      return;
-    }
-
-    this.submitting.set(true);
-
-    /* El backend espera `java.time.LocalDateTime`.
-    Desde el input type="date" recibimos YYYY-MM-DD.
-    Por el log del backend, el formato esperado es: "YYYY-MM-DD HH:mm:ss" (con espacio, no con 'T'). */
-    const fechaForm: string = this.pagoForm.value.fecha;
-    const fechaLocalDateTime = fechaForm
-      ? (fechaForm.length > 10
-          ? fechaForm.replace('T', ' ')
-          : `${fechaForm} 00:00:00`)
-      : null;
-
-    const pagoData: any = {
-      id: this.id_pago(),
-      abonado: this.pagoForm.value.abonado ? 1 : 0,
-      fecha: fechaLocalDateTime,
-      cuota: { id: this.pagoForm.value.id_cuota },
-      jugador: { id: this.pagoForm.value.id_jugador },
-    };
-
-    console.log('Datos a enviar al backend:', pagoData);
-
-    this.oPagoService.update(pagoData).subscribe({
-      next: (id: number) => {
-        this.snackBar.open('Pago actualizado exitosamente', 'Cerrar', { duration: 4000 });
-        this.submitting.set(false);
-        this.router.navigate(['/pago']);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error.set('Error actualizando el pago');
-        this.snackBar.open('Error actualizando el pago', 'Cerrar', { duration: 4000 });
-        console.error(err);
-        this.submitting.set(false);
-      },
-    });
-  }
-
-  doCancel(): void {
-    this.router.navigate(['/pago']);
   }
 }

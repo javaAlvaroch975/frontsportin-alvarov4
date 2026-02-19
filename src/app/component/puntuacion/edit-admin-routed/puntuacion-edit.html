@@ -87,6 +87,32 @@
                 }
               </div>
 
+              <!-- Buscador, ID y Descripción para Noticia -->
+              <div class="d-flex gap-3 align-items-end flex-wrap mb-4">
+                <button type="button" class="btn btn-info" (click)="openNoticiaFinderModal()">
+                  <i class="bi bi-search me-2"></i>Buscar
+                </button>
+                <div>
+                  <label for="display_id_noticia" class="form-label">ID Noticia</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="display_id_noticia"
+                    [value]="displayIdNoticia() || ''"
+                    readonly
+                  />
+                </div>
+                @if (selectedNoticia()) {
+                  <div class="grow">
+                    <label class="form-label">Noticia</label>
+                    <p class="form-control-plaintext fw-semibold mb-0">
+                      {{ selectedNoticia()?.titulo }}
+                    </p>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
               <!-- Usuario Dropdown -->
               <div class="mb-4">
                 <label for="usuario" class="form-label"
@@ -114,18 +140,11 @@
                 }
               </div>
 
-              <!-- IDs y resumen -->
+              <!-- Buscador, ID y Descripción para Usuario -->
               <div class="d-flex gap-3 align-items-end flex-wrap">
-                <div>
-                  <label for="display_id_noticia" class="form-label">ID Noticia</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="display_id_noticia"
-                    [value]="displayIdNoticia() || ''"
-                    readonly
-                  />
-                </div>
+                <button type="button" class="btn btn-info" (click)="openUsuarioFinderModal()">
+                  <i class="bi bi-search me-2"></i>Buscar
+                </button>
                 <div>
                   <label for="display_id_usuario" class="form-label">ID Usuario</label>
                   <input
@@ -136,14 +155,6 @@
                     readonly
                   />
                 </div>
-                @if (selectedNoticia()) {
-                  <div class="grow">
-                    <label class="form-label">Noticia</label>
-                    <p class="form-control-plaintext fw-semibold mb-0">
-                      {{ selectedNoticia()?.titulo }}
-                    </p>
-                  </div>
-                }
                 @if (selectedUsuario()) {
                   <div class="grow">
                     <label class="form-label">Usuario</label>
@@ -154,8 +165,7 @@
                   </div>
                 }
               </div>
-            </div>
-
+              </div>
             <!-- Botones -->
             <div class="d-flex justify-content-between align-items-center mt-4">
               <a [routerLink]="['/puntuacion']" class="btn btn-outline-secondary"> Cancelar </a>

@@ -6,17 +6,17 @@
   </div>
 }
 
-<!-- Búsqueda por descripción usando debounce -->
+<!-- Búsqueda por nombre -->
 @if (equipo() <= 0) {
   <div class="d-flex justify-content-center my-2">
     <input
       class="form-control me-2"
       type="search"
-      placeholder="Buscar por descripción"
+      placeholder="Buscar por nombre"
       aria-label="Search"
-      (input)="onSearchDescription($event.target.value)"
-      [value]="descripcion()"
-      name="searchDescription"
+      (input)="onSearchNombre($event.target.value)"
+      [value]="nombre()"
+      name="searchNombre"
     />
   </div>
 }
@@ -27,12 +27,12 @@
   @if (equipo() > 0) {
     <small class="text-muted ms-3">Filtro: id de equipo = {{ equipo() }}</small>
     <!-- quitar el filtro -->
-    <a class="ms-2" [routerLink]="['/cuota']" role="button" title="Quitar filtro"
+    <a class="ms-2" [routerLink]="['/liga']" role="button" title="Quitar filtro"
       ><i class="bi bi-x-lg" aria-hidden="true"></i> Quitar filtro</a
     >
   }
-  @if (descripcion().length > 0) {
-    <small class="text-muted ms-3">Filtro: descripción contiene "{{ descripcion() }}"</small>
+  @if (nombre().length > 0) {
+    <small class="text-muted ms-3">Filtro: nombre contiene "{{ nombre() }}"</small>
     <!-- quitar el filtro -->
   }
 </div>
@@ -55,8 +55,8 @@
     <thead>
       <tr>
         <th scope="col" (click)="onOrder('id')" style="cursor: pointer; width: 5%">
-          <span class="header-inline"
-            >ID
+          <span class="header-inline">
+            ID
             @if (orderField() === 'id') {
               @if (orderDirection() === 'asc') {
                 <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
@@ -67,10 +67,10 @@
             }
           </span>
         </th>
-        <th scope="col" (click)="onOrder('descripcion')" style="cursor: pointer; width: 25%">
-          <span class="header-inline"
-            >Descripción
-            @if (orderField() === 'descripcion') {
+        <th scope="col" (click)="onOrder('nombre')" style="cursor: pointer; width: 30%">
+          <span class="header-inline">
+            Nombre
+            @if (orderField() === 'nombre') {
               @if (orderDirection() === 'asc') {
                 <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
               }
@@ -80,35 +80,9 @@
             }
           </span>
         </th>
-        <th scope="col" (click)="onOrder('cantidad')" style="cursor: pointer; width: 10%">
-          <span class="header-inline"
-            >Cantidad
-            @if (orderField() === 'cantidad') {
-              @if (orderDirection() === 'asc') {
-                <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
-              }
-              @if (orderDirection() === 'desc') {
-                <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
-              }
-            }
-          </span>
-        </th>
-        <th scope="col" (click)="onOrder('fecha')" style="cursor: pointer; width: 15%">
-          <span class="header-inline"
-            >Fecha
-            @if (orderField() === 'fecha') {
-              @if (orderDirection() === 'asc') {
-                <i class="bi bi-caret-up-fill ms-1"></i>
-              }
-              @if (orderDirection() === 'desc') {
-                <i class="bi bi-caret-down-fill ms-1"></i>
-              }
-            }
-          </span>
-        </th>
-        <th scope="col" (click)="onOrder('equipo')" style="cursor: pointer; width: 20%">
-          <span class="header-inline"
-            >Equipo
+        <th scope="col" (click)="onOrder('equipo')" style="cursor: pointer; width: 40%">
+          <span class="header-inline">
+            Equipo
             @if (orderField() === 'equipo') {
               @if (orderDirection() === 'asc') {
                 <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
@@ -119,34 +93,42 @@
             }
           </span>
         </th>
-        <th scope="col" style="width: 10%">
-          <span class="header-inline">Pagos </span>
+        <th scope="col" (click)="onOrder('partidos')" style="cursor: pointer; width: 15%">
+          <span class="header-inline">
+            Partidos
+            @if (orderField() === 'partidos') {
+              @if (orderDirection() === 'asc') {
+                <i class="bi bi-caret-up-fill ms-1" aria-hidden="true"></i>
+              }
+              @if (orderDirection() === 'desc') {
+                <i class="bi bi-caret-down-fill ms-1" aria-hidden="true"></i>
+              }
+            }
+          </span>
         </th>
-        <th scope="col">
-          <span class="header-inline">Acciones </span>
+        <th scope="col" style="width: 10%">
+          <span class="header-inline">Acciones</span>
         </th>
       </tr>
     </thead>
     <tbody>
-      @for (oCuota of oPage()?.content; track oCuota.id) {
+      @for (oLiga of oPage()?.content; track oLiga.id) {
         <tr>
-          <th scope="row" style="text-align: center">{{ oCuota.id }}</th>
-          <td>{{ oCuota.descripcion }}</td>
-          <td style="text-align: right">{{ oCuota.cantidad }} €</td>
-          <td>{{ oCuota.fecha | datetime }}</td>
+          <th scope="row" style="text-align: center">{{ oLiga.id }}</th>
+          <td>{{ oLiga.nombre }}</td>
           <td>
             @if (isDialogMode()) {
-              {{ oCuota.equipo.nombre }}
+              {{ oLiga.equipo.nombre }}
             } @else {
-              @if (oCuota.equipo) {
-                <a [routerLink]="['/equipo', '/view', oCuota.equipo.id]">
-                  {{ oCuota.equipo.nombre || '' | trim: 20 }}
-                  {{ ' (' + oCuota.equipo.id + ')' }}
+              @if (oLiga.equipo) {
+                <a [routerLink]="['/equipo', '/view', oLiga.equipo.id]">
+                  {{ oLiga.equipo.nombre || 'N/A' }}
+                  {{ ' (' + oLiga.equipo.id + ')' }}
                 </a>
                 <!-- Botón alineado a la derecha para filtrar equipo -->
                 <a
                   class="btn btn-warning btn-sm ms-2 float-end"
-                  [routerLink]="['/cuota/equipo', oCuota.equipo.id]"
+                  [routerLink]="['/liga/equipo', oLiga.equipo.id]"
                   role="button"
                   title="Filtrar por equipo"
                   ><i class="bi bi-funnel-fill" aria-hidden="true"></i
@@ -156,21 +138,13 @@
               }
             }
           </td>
-          <td style="text-align: center">
-            @if (oCuota.pagos === 0) {
-              <i class="bi bi-ban" aria-hidden="true"></i>
-            } @else {
-              <a [routerLink]="['/pago/cuota', oCuota.id]">
-                {{ oCuota.pagos }}
-              </a>
-            }
-          </td>
+          <td style="text-align: center">{{ oLiga.partidos }}</td>
           <td>
             @if (isDialogMode()) {
               <div class="d-flex justify-content-center">
                 <button
                   class="btn btn-success btn-sm"
-                  (click)="onSelect(oCuota)"
+                  (click)="onSelect(oLiga)"
                   title="Seleccionar"
                 >
                   <i class="bi bi-check-circle" aria-hidden="true"></i> Seleccionar
@@ -179,8 +153,8 @@
             } @else {
               <div class="d-flex justify-content-center">
                 <app-botonera-actions-plist
-                  [id]="oCuota.id"
-                  strEntity="cuota"
+                  [id]="oLiga.id"
+                  strEntity="liga"
                 ></app-botonera-actions-plist>
               </div>
             }

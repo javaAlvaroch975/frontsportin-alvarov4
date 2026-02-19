@@ -10,6 +10,9 @@ import { UsuarioService } from '../../../service/usuarioService';
 import { IPuntuacion } from '../../../model/puntuacion';
 import { INoticia } from '../../../model/noticia';
 import { IUsuario } from '../../../model/usuario';
+import { NoticiaPlistAdminUnrouted } from '../../noticia/plist-admin-unrouted/noticia-plist-admin-unrouted';
+import { MatDialog } from '@angular/material/dialog';
+import { UsuarioPlistAdminUnrouted } from '../../usuario/plist-admin-unrouted/usuario-plist-admin-unrouted';
 
 @Component({
   selector: 'app-puntuacion-edit',
@@ -37,6 +40,8 @@ export class PuntuacionEditAdminRouted implements OnInit {
   selectedUsuario = signal<IUsuario | null>(null);
   displayIdNoticia = signal<number | null>(null);
   displayIdUsuario = signal<number | null>(null);
+
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -196,4 +201,57 @@ export class PuntuacionEditAdminRouted implements OnInit {
       },
     });
   }
+
+  openNoticiaFinderModal(): void {
+      const dialogRef = this.dialog.open(NoticiaPlistAdminUnrouted, {
+        height: '800px',
+        width: '1100px',
+        maxWidth: '95vw',
+        panelClass: 'noticia-dialog',
+        data: {
+          title: 'Aqui elegir noticia',
+          message: 'Plist finder para encontrar la noticia y asignarla a la puntuación',
+        },
+      });
+  
+      dialogRef.afterClosed().subscribe((noticia: INoticia | null) => {
+        if (noticia) {
+          this.puntuacionForm.patchValue({
+            id_noticia: noticia.id,
+          });
+          // Sincronizar explícitamente después de seleccionar desde el modal
+          this.syncNoticia(noticia.id);
+          this.snackBar.open(`Noticia seleccionada: ${noticia.contenido}`, 'Cerrar', {
+            duration: 3000,
+          });
+        }
+      });
+    }
+
+    openUsuarioFinderModal(): void {
+      const dialogRef = this.dialog.open(UsuarioPlistAdminUnrouted, {
+        height: '800px',
+        width: '1100px',
+        maxWidth: '95vw',
+        panelClass: 'usuario-dialog',
+        data: {
+          title: 'Aqui elegir usuario',
+          message: 'Plist finder para encontrar el usuario y asignarlo a la puntuación',
+        },
+      });
+  
+      dialogRef.afterClosed().subscribe((usuario: IUsuario | null) => {
+        if (usuario) {
+          this.puntuacionForm.patchValue({
+            id_usuario: usuario.id,
+          });
+          // Sincronizar explícitamente después de seleccionar desde el modal
+          this.syncUsuario(usuario.id);
+          this.snackBar.open(`Tipo de artículo seleccionado: ${usuario.nombre}`, 'Cerrar', {
+            duration: 3000,
+          });
+        }
+      });
+    }
+
 }

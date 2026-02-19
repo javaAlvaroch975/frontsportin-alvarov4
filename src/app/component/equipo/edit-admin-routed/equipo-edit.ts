@@ -4,12 +4,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { EquipoService } from '../../../service/equipo';
 import { CategoriaService } from '../../../service/categoria';
 import { UsuarioService } from '../../../service/usuarioService';
 import { ICategoria } from '../../../model/categoria';
 import { IUsuario } from '../../../model/usuario';
 import { IEquipo } from '../../../model/equipo';
+import { CategoriaPlistAdminUnrouted } from '../../categoria/plist-admin-unrouted/categoria-plist-admin-unrouted';
+import { UsuarioPlistAdminUnrouted } from '../../usuario/plist-admin-unrouted/usuario-plist-admin-unrouted';
 
 @Component({
   selector: 'app-equipo-edit-routed',
@@ -25,24 +28,15 @@ export class EquipoEditAdminRouted implements OnInit {
   private snackBar = inject(MatSnackBar);
   private oCategoriaService = inject(CategoriaService);
   private oUsuarioService = inject(UsuarioService);
+  private dialog = inject(MatDialog);
 
   equipoForm!: FormGroup;
   id_equipo = signal<number>(0);
   loading = signal(true);
   error = signal<string | null>(null);
   submitting = signal(false);
-  // Guardar ids de claves ajenas para reenviarlos en el update
-  currentCategoriaId = signal<number | null>(null);
-  currentEntrenadorId = signal<number | null>(null);
-  // Guardar nombres para mostrarlos en el formulario (solo lectura)
-  currentCategoriaName = signal<string | null>(null);
-  currentEntrenadorName = signal<string | null>(null);
-
-  // Listas para selects
-  categorias = signal<ICategoria[]>([]);
-  entrenadores = signal<IUsuario[]>([]);
-
-  constructor() {}
+  selectedCategoria = signal<ICategoria | null>(null);
+  selectedEntrenador = signal<IUsuario | null>(null);
 
   ngOnInit(): void {
     this.initForm();
@@ -64,8 +58,6 @@ export class EquipoEditAdminRouted implements OnInit {
     }
 
     this.loadEquipo();
-    this.loadCategorias();
-    this.loadEntrenadores();
   }
 
   private initForm(): void {
@@ -80,20 +72,18 @@ export class EquipoEditAdminRouted implements OnInit {
   private loadEquipo(): void {
     this.oEquipoService.get(this.id_equipo()).subscribe({
       next: (equipo: IEquipo) => {
+        const categoriaId = equipo.categoria?.id ?? null;
+        const entrenadorId = equipo.entrenador?.id ?? null;
+
         this.equipoForm.patchValue({
           id: equipo.id,
           nombre: equipo.nombre,
-          id_categoria: equipo.categoria?.id ?? null,
-          id_entrenador: equipo.entrenador?.id ?? null,
+          id_categoria: categoriaId,
+          id_entrenador: entrenadorId,
         });
-        // Guardar ids de categoria y entrenador para incluirlos en el update
-        this.currentCategoriaId.set(equipo.categoria?.id ?? null);
-        this.currentEntrenadorId.set(equipo.entrenador?.id ?? null);
-        // Guardar también los nombres para mostrarlos en campos de solo lectura
-        this.currentCategoriaName.set(equipo.categoria?.nombre ?? null);
-        this.currentEntrenadorName.set(
-          equipo.entrenador ? `${equipo.entrenador.nombre} ${equipo.entrenador.apellido1 ?? ''}`.trim() : null
-        );
+
+        this.syncCategoria(categoriaId);
+        this.syncEntrenador(entrenadorId);
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -105,42 +95,99 @@ export class EquipoEditAdminRouted implements OnInit {
     });
   }
 
-  private loadCategorias(): void {
-    // Cargar primeras 100 categorías para el select
-    const page = 0;
-    const rpp = 100;
-    this.oCategoriaService.getPage(page, rpp).subscribe({
-      next: (pageData: any) => {
-        this.categorias.set(pageData.content || []);
+  private syncCategoria(idCategoria: number | null): void {
+    if (!idCategoria) {
+      this.selectedCategoria.set(null);
+      return;
+    }
+
+    this.oCategoriaService.get(idCategoria).subscribe({
+      next: (categoria: ICategoria) => {
+        this.selectedCategoria.set(categoria);
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Error cargando categorías', err);
+        this.selectedCategoria.set(null);
+        console.error('Error al sincronizar categoría:', err);
+        this.snackBar.open('Error al cargar la categoría seleccionada', 'Cerrar', { duration: 3000 });
       },
     });
   }
 
-  private loadEntrenadores(): void {
-    // Cargar primeras 200 usuarios para el select (filtrado no aplicado para mantener simple)
-    const page = 0;
-    const rpp = 200;
-    this.oUsuarioService.getPage(page, rpp).subscribe({
-      next: (pageData: any) => {
-        this.entrenadores.set(pageData.content || []);
+  private syncEntrenador(idEntrenador: number | null): void {
+    if (!idEntrenador) {
+      this.selectedEntrenador.set(null);
+      return;
+    }
+
+    this.oUsuarioService.get(idEntrenador).subscribe({
+      next: (entrenador: IUsuario) => {
+        this.selectedEntrenador.set(entrenador);
       },
       error: (err: HttpErrorResponse) => {
-        console.error('Error cargando usuarios', err);
+        this.selectedEntrenador.set(null);
+        console.error('Error al sincronizar entrenador:', err);
+        this.snackBar.open('Error al cargar el entrenador seleccionado', 'Cerrar', { duration: 3000 });
       },
     });
   }
 
-  onCategoriaChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.currentCategoriaId.set(value && value !== 'null' ? Number(value) : null);
+  openCategoriaFinderModal(): void {
+    const dialogRef = this.dialog.open(CategoriaPlistAdminUnrouted, {
+      height: '800px',
+      width: '1000px',
+      maxWidth: '95vw',
+      panelClass: 'categoria-dialog',
+      data: {
+        title: 'Aquí elegir categoría',
+        message: 'Plist finder para encontrar la categoría y asignarla al equipo',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((categoria: ICategoria | null) => {
+      if (categoria) {
+        this.equipoForm.patchValue({
+          id_categoria: categoria.id,
+        });
+        this.syncCategoria(categoria.id);
+        this.snackBar.open(`Categoría seleccionada: ${categoria.nombre}`, 'Cerrar', {
+          duration: 3000,
+        });
+      }
+    });
   }
 
-  onEntrenadorChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    this.currentEntrenadorId.set(value && value !== 'null' ? Number(value) : null);
+  openEntrenadorFinderModal(): void {
+    const dialogRef = this.dialog.open(UsuarioPlistAdminUnrouted, {
+      height: '800px',
+      width: '1300px',
+      maxWidth: '95vw',
+      panelClass: 'usuario-dialog',
+      data: {
+        title: 'Aquí elegir entrenador',
+        message: 'Plist finder para encontrar el entrenador y asignarlo al equipo',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((entrenador: IUsuario | null) => {
+      if (entrenador) {
+        this.equipoForm.patchValue({
+          id_entrenador: entrenador.id,
+        });
+        this.syncEntrenador(entrenador.id);
+        const entrenadorNombre = `${entrenador.nombre} ${entrenador.apellido1 ?? ''}`.trim();
+        this.snackBar.open(`Entrenador seleccionado: ${entrenadorNombre}`, 'Cerrar', {
+          duration: 3000,
+        });
+      }
+    });
+  }
+
+  get entrenadorNombreSeleccionado(): string {
+    const entrenador = this.selectedEntrenador();
+    if (!entrenador) {
+      return '';
+    }
+    return `${entrenador.nombre} ${entrenador.apellido1 ?? ''}`.trim();
   }
 
   get nombre() {
@@ -170,9 +217,8 @@ export class EquipoEditAdminRouted implements OnInit {
       nombre: this.equipoForm.value.nombre,
     } as Partial<IEquipo>;
 
-    // Incluir referencias a claves ajenas si existen para evitar errores en el backend
-    const selectedCategoriaId = this.equipoForm.value.id_categoria ?? this.currentCategoriaId();
-    const selectedEntrenadorId = this.equipoForm.value.id_entrenador ?? this.currentEntrenadorId();
+    const selectedCategoriaId = this.equipoForm.value.id_categoria;
+    const selectedEntrenadorId = this.equipoForm.value.id_entrenador;
 
     if (selectedCategoriaId) {
       equipoData.categoria = { id: Number(selectedCategoriaId) };

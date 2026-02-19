@@ -25,36 +25,23 @@
           <!-- ID (solo lectura) -->
           <div class="mb-4">
             <label for="id" class="form-label">ID de compra</label>
-            <input
-              type="text"
-              class="form-control"
-              id="id"
-              formControlName="id"
-              readonly
-            />
+            <input type="text" class="form-control" id="id" formControlName="id" readonly />
           </div>
 
           <!-- Cantidad -->
           <div class="mb-4">
             <label for="cantidad" class="form-label">Cantidad <span class="text-danger">*</span></label>
-            <input
-              type="number"
-              step="1"
-              min="0"
-              class="form-control"
+            <input type="number" step="1" min="0" class="form-control"
               [class.is-invalid]="cantidad?.invalid && cantidad?.touched"
-              [class.is-valid]="cantidad?.valid && cantidad?.touched"
-              id="cantidad"
-              formControlName="cantidad"
-              placeholder="0"
-            />
+              [class.is-valid]="cantidad?.valid && cantidad?.touched" id="cantidad" formControlName="cantidad"
+              placeholder="0" />
             @if (cantidad?.invalid && cantidad?.touched) {
             <div class="invalid-feedback">
               @if (cantidad?.errors?.['required']) {
-                <span>La cantidad es obligatoria.</span>
+              <span>La cantidad es obligatoria.</span>
               }
               @if (cantidad?.errors?.['min']) {
-                <span>La cantidad debe ser mayor o igual a 0.</span>
+              <span>La cantidad debe ser mayor o igual a 0.</span>
               }
             </div>
             }
@@ -63,75 +50,91 @@
           <!-- Precio -->
           <div class="mb-4">
             <label for="precio" class="form-label">Precio (€) <span class="text-danger">*</span></label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              class="form-control"
+            <input type="number" step="0.01" min="0" class="form-control"
               [class.is-invalid]="precio?.invalid && precio?.touched"
-              [class.is-valid]="precio?.valid && precio?.touched"
-              id="precio"
-              formControlName="precio"
-              placeholder="0.00"
-              (input)="limitDecimalPlaces($event, 'precio', 2)"
-            />
+              [class.is-valid]="precio?.valid && precio?.touched" id="precio" formControlName="precio"
+              placeholder="0.00" (input)="limitDecimalPlaces($event, 'precio', 2)" />
             @if (precio?.invalid && precio?.touched) {
             <div class="invalid-feedback">
               @if (precio?.errors?.['required']) {
-                <span>El precio es obligatorio.</span>
+              <span>El precio es obligatorio.</span>
               }
               @if (precio?.errors?.['min']) {
-                <span>El precio debe ser mayor o igual a 0.</span>
+              <span>El precio debe ser mayor o igual a 0.</span>
               }
             </div>
             }
           </div>
 
 
-          <!-- Artículo -->
-          <div class="mb-4">
-            <label for="articulo" class="form-label">Artículo <span class="text-danger">*</span></label>
-            <select
-              id="articulo"
-              style="cursor: pointer;"
-              class="form-select"
-              [class.is-invalid]="id_articulo?.invalid && id_articulo?.touched"
-              [class.is-valid]="id_articulo?.valid && id_articulo?.touched"
-              formControlName="id_articulo"
-            >
-              <option [value]="null" disabled>Selecciona un  artículo</option>
-              @for (articulo of articulos(); track articulo.id) {
-                <option [value]="articulo.id">{{ articulo.descripcion }} - {{ articulo.precio | currency: 'EUR' }} </option>
+          <!-- Sección: Artículo -->
+          <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+            <div class="mb-4">
+              <label for="articulo" class="form-label">Artículo <span class="text-danger">*</span></label>
+              <input id="articulo" type="text" class="form-control"
+                [class.is-invalid]="id_articulo?.invalid && id_articulo?.touched"
+                [class.is-valid]="id_articulo?.valid && id_articulo?.touched" [value]="selectedArticulo()?.descripcion"
+                readonly />
+              @if (id_articulo?.invalid && id_articulo?.touched) {
+              <div class="invalid-feedback">
+                <span>Debe seleccionar un artículo.</span>
+              </div>
               }
-            </select>
-            @if (id_articulo?.invalid && id_articulo?.touched) {
-            <div class="invalid-feedback">
-              <span>Debe seleccionar un artículo.</span>
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end">
+              <button type="button" class="btn btn-info" (click)="openArticuloFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_articulo" class="form-label">ID Artículo</label>
+                <input type="text" class="form-control" id="display_id_articulo" [value]="id_articulo?.value"
+                  formControlName="id_articulo" readonly />
+              </div>
+              @if (selectedArticulo()) {
+              <div class="grow">
+                <label class="form-label">Precio</label>
+                <p class="form-control-plaintext fw-semibold mb-0">
+                  {{ selectedArticulo()?.precio | currency: 'EUR' }}
+                </p>
+              </div>
+              }
+            </div>
           </div>
 
-          <!-- Factura -->
-          <div class="mb-4">
-            <label for="factura" class="form-label">Factura <span class="text-danger">*</span></label>
-            <select
-              id="factura"
-              style="cursor: pointer;"
-              class="form-select"
-              [class.is-invalid]="id_factura?.invalid && id_factura?.touched"
-              [class.is-valid]="id_factura?.valid && id_factura?.touched"
-              formControlName="id_factura"
-            >
-              <option [value]="null" disabled>Selecciona una factura</option>
-              @for (factura of facturas(); track factura.id) {
-                <option [value]="factura.id">{{ factura.id }} - {{factura.fecha}} </option>
+          <!-- Sección: Factura -->
+          <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+            <div class="mb-4">
+              <label for="factura" class="form-label">Factura <span class="text-danger">*</span></label>
+              <input id="factura" type="text" class="form-control"
+                [class.is-invalid]="id_factura?.invalid && id_factura?.touched"
+                [class.is-valid]="id_factura?.valid && id_factura?.touched" [value]="selectedFactura()?.fecha"
+                readonly />
+              @if (id_factura?.invalid && id_factura?.touched) {
+              <div class="invalid-feedback">
+                <span>Debe seleccionar una factura.</span>
+              </div>
               }
-            </select>
-            @if (id_factura?.invalid && id_factura?.touched) {
-            <div class="invalid-feedback">
-              <span>Debe seleccionar una factura.</span>
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end">
+              <button type="button" class="btn btn-info" (click)="openFacturaFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_factura" class="form-label">ID Factura</label>
+                <input type="text" class="form-control" id="display_id_factura" [value]="id_factura?.value"
+                  formControlName="id_factura" readonly />
+              </div>
+              @if (selectedFactura()) {
+              <div class="grow">
+                <label class="form-label">Usuario</label>
+                <p class="form-control-plaintext fw-semibold mb-0">
+                  {{ selectedFactura()?.usuario?.nombre }}
+                </p>
+              </div>
+              }
+            </div>
           </div>
 
           <!-- Botones -->
@@ -139,13 +142,9 @@
             <a [routerLink]="['/compra']" class="btn btn-outline-secondary">
               Cancelar
             </a>
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="submitting() || compraForm.invalid"
-            >
+            <button type="submit" class="btn btn-primary" [disabled]="submitting() || compraForm.invalid">
               @if (submitting()) {
-                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               }
               Guardar Cambios
             </button>

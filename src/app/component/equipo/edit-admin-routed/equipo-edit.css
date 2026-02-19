@@ -1,9 +1,13 @@
-.tipoarticulo-dialog .mat-mdc-dialog-container {
+.tipoarticulo-dialog .mat-mdc-dialog-container,
+.categoria-dialog .mat-mdc-dialog-container,
+.usuario-dialog .mat-mdc-dialog-container {
   padding: 16px;
   box-sizing: border-box;
 }
 
-.tipoarticulo-dialog .mat-mdc-dialog-content {
+.tipoarticulo-dialog .mat-mdc-dialog-content,
+.categoria-dialog .mat-mdc-dialog-content,
+.usuario-dialog .mat-mdc-dialog-content {
   padding: 0;
   margin: 50px;
 }

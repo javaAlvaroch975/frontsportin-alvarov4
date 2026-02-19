@@ -104,61 +104,101 @@
             }
           </div>
 
-          <!-- Usuario -->
-          <div class="mb-4">
-            <label for="id_usuario" class="form-label">Usuario<span class="text-danger">*</span></label>
-            <select
-              class="form-control"
-              [class.is-invalid]="id_usuario?.invalid && id_usuario?.touched"
-              [class.is-valid]="id_usuario?.valid && id_usuario?.touched"
-              id="id_usuario"
-              formControlName="id_usuario"
-            >
-              <option [ngValue]="null" disabled>Selecciona un usuario</option>
-              @for (usuario of usuarios(); track usuario.id) {
-                <option [ngValue]="usuario.id"> 
-                  {{ usuario.username }} (ID: {{ usuario.id }})
-                </option>
-              }
-            </select>
-            @if (id_usuario?.invalid && id_usuario?.touched) {
-            <div class="invalid-feedback d-block">
-              @if (id_usuario?.errors?.['required']) {
-                <span>El usuario es obligatorio.</span>
+          <!-- Sección: Usuario -->
+          <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+            <div class="mb-4">
+              <label for="usuario" class="form-label">Usuario <span class="text-danger">*</span></label>
+              <input
+                id="usuario"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="id_usuario?.invalid && id_usuario?.touched"
+                [class.is-valid]="id_usuario?.valid && id_usuario?.touched"
+                [value]="selectedUsuario()?.username"
+                readonly
+              />
+              @if (id_usuario?.invalid && id_usuario?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un usuario.</span>
+                </div>
               }
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end">
+              <button type="button" class="btn btn-info" (click)="openUsuarioFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_usuario" class="form-label">ID Usuario</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_usuario"
+                  [value]="id_usuario?.value"
+                  formControlName="id_usuario"
+                  readonly
+                />
+              </div>
+              @if (selectedUsuario()) {
+                <div class="grow">
+                  <label class="form-label">Nombre</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedUsuario()?.nombre }} {{ selectedUsuario()?.apellido1 }} {{ selectedUsuario()?.apellido2 }}
+                  </p>
+                </div>
+              }
+            </div>
           </div>
 
-          <!-- Equipo -->
-          <div class="mb-4">
-            <label for="id_equipo" class="form-label">Equipo<span class="text-danger">*</span></label>
-            <select
-              class="form-control"
-              [class.is-invalid]="id_equipo?.invalid && id_equipo?.touched"
-              [class.is-valid]="id_equipo?.valid && id_equipo?.touched"
-              id="id_equipo"
-              formControlName="id_equipo"
-            >
-              <option [ngValue]="null" disabled>Selecciona un equipo</option>
-              @for (equipo of equipos(); track equipo.id) {
-                <option [ngValue]="equipo.id"> 
-                  {{ equipo.nombre }} (ID: {{ equipo.id }})
-                </option>
-              }
-            </select>
-            @if (id_equipo?.invalid && id_equipo?.touched) {
-            <div class="invalid-feedback d-block">
-              @if (id_equipo?.errors?.['required']) {
-                <span>El equipo es obligatorio.</span>
+          <!-- Sección: Equipo -->
+          <div class="p-4 rounded mb-4" style="background-color: #e4e4e4; border-left: 4px solid #0d6efd;">
+            <div class="mb-4">
+              <label for="equipo" class="form-label">Equipo <span class="text-danger">*</span></label>
+              <input
+                id="equipo"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="id_equipo?.invalid && id_equipo?.touched"
+                [class.is-valid]="id_equipo?.valid && id_equipo?.touched"
+                [value]="selectedEquipo()?.nombre"
+                readonly
+              />
+              @if (id_equipo?.invalid && id_equipo?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un equipo.</span>
+                </div>
               }
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end">
+              <button type="button" class="btn btn-info" (click)="openEquipoFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_equipo" class="form-label">ID Equipo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_equipo"
+                  [value]="id_equipo?.value"
+                  formControlName="id_equipo"
+                  readonly
+                />
+              </div>
+              @if (selectedEquipo()) {
+                <div class="grow">
+                  <label class="form-label">(Info)</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedEquipo()?.nombre }}
+                  </p>
+                </div>
+              }
+            </div>
           </div>
 
           <!-- Botones -->
           <div class="d-flex justify-content-between align-items-center mt-4">
-            <a [routerLink]="['/jugador']" class="btn btn-outline-secondary">
+            <a (click)="doCancel()" class="btn btn-outline-secondary" style="cursor: pointer;">
               Cancelar
             </a>
             <button
