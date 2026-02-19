@@ -202,82 +202,151 @@
             />
           </div>
 
-          <!-- Club -->
-          <div class="mb-4">
-            <label for="id_club" class="form-label">Club<span class="text-danger">*</span></label>
-            <select
-              class="form-control"
-              [class.is-invalid]="id_club?.invalid && id_club?.touched"
-              [class.is-valid]="id_club?.valid && id_club?.touched"
-              id="id_club"
-              formControlName="id_club"
-            >
-              <option [ngValue]="null" disabled>Selecciona un club</option>
-              @for (club of clubs(); track club.id) {
-                <option [ngValue]="club.id">
-                  {{ club.nombre }} (ID: {{ club.id }})
-                </option>
-              }
-            </select>
-            @if (id_club?.invalid && id_club?.touched) {
-            <div class="invalid-feedback d-block">
-              @if (id_club?.errors?.['required']) {
-                <span>El club es obligatorio.</span>
+          <!-- Sección: Club -->
+          <div class="fk-box p-4 rounded mb-4">
+            <div class="mb-4">
+              <label for="id_club" class="form-label">Club<span class="text-danger">*</span></label>
+              <select
+                id="id_club"
+                style="cursor: pointer"
+                class="form-select"
+                [class.is-invalid]="id_club?.invalid && id_club?.touched"
+                [class.is-valid]="id_club?.valid && id_club?.touched"
+                formControlName="id_club"
+              >
+                <option [value]="null" disabled>Selecciona un club</option>
+                @for (club of clubs(); track club.id) {
+                  <option [value]="club.id">{{ club.nombre }}</option>
+                }
+              </select>
+              @if (id_club?.invalid && id_club?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un club.</span>
+                </div>
               }
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end flex-wrap">
+              <button type="button" class="btn btn-info" (click)="openClubFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_club" class="form-label">ID Club</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_club"
+                  [value]="displayIdClub() || ''"
+                  readonly
+                />
+              </div>
+              @if (selectedClub()) {
+                <div class="grow">
+                  <label class="form-label">Nombre</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedClub()?.nombre }}
+                  </p>
+                </div>
+              }
+            </div>
           </div>
 
-          <!-- Tipo Usuario -->
-          <div class="mb-4">
-            <label for="id_tipousuario" class="form-label">Tipo de Usuario<span class="text-danger">*</span></label>
-            <select
-              class="form-control"
-              [class.is-invalid]="id_tipousuario?.invalid && id_tipousuario?.touched"
-              [class.is-valid]="id_tipousuario?.valid && id_tipousuario?.touched"
-              id="id_tipousuario"
-              formControlName="id_tipousuario"
-            >
-              <option [ngValue]="null" disabled>Selecciona un tipo de usuario</option>
-              @for (tipousuario of tipousuarios(); track tipousuario.id) {
-                <option [ngValue]="tipousuario.id">
-                  {{ tipousuario.descripcion }} (ID: {{ tipousuario.id }})
-                </option>
-              }
-            </select>
-            @if (id_tipousuario?.invalid && id_tipousuario?.touched) {
-            <div class="invalid-feedback d-block">
-              @if (id_tipousuario?.errors?.['required']) {
-                <span>El tipo de usuario es obligatorio.</span>
+          <!-- Sección: Tipo de Usuario -->
+          <div class="fk-box p-4 rounded mb-4">
+            <div class="mb-4">
+              <label for="id_tipousuario" class="form-label">Tipo de Usuario<span class="text-danger">*</span></label>
+              <select
+                id="id_tipousuario"
+                style="cursor: pointer"
+                class="form-select"
+                [class.is-invalid]="id_tipousuario?.invalid && id_tipousuario?.touched"
+                [class.is-valid]="id_tipousuario?.valid && id_tipousuario?.touched"
+                formControlName="id_tipousuario"
+              >
+                <option [value]="null" disabled>Selecciona un tipo de usuario</option>
+                @for (tipousuario of tipousuarios(); track tipousuario.id) {
+                  <option [value]="tipousuario.id">{{ tipousuario.descripcion }}</option>
+                }
+              </select>
+              @if (id_tipousuario?.invalid && id_tipousuario?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un tipo de usuario.</span>
+                </div>
               }
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end flex-wrap">
+              <button type="button" class="btn btn-info" (click)="openTipousuarioFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_tipousuario" class="form-label">ID Tipo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_tipousuario"
+                  [value]="displayIdTipousuario() || ''"
+                  readonly
+                />
+              </div>
+              @if (selectedTipousuario()) {
+                <div class="grow">
+                  <label class="form-label">Descripción</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedTipousuario()?.descripcion }}
+                  </p>
+                </div>
+              }
+            </div>
           </div>
 
-          <!-- Rol Usuario -->
-          <div class="mb-4">
-            <label for="id_rolusuario" class="form-label">Rol de Usuario<span class="text-danger">*</span></label>
-            <select
-              class="form-control"
-              [class.is-invalid]="id_rolusuario?.invalid && id_rolusuario?.touched"
-              [class.is-valid]="id_rolusuario?.valid && id_rolusuario?.touched"
-              id="id_rolusuario"
-              formControlName="id_rolusuario"
-            >
-              <option [ngValue]="null" disabled>Selecciona un rol de usuario</option>
-              @for (rolusuario of rolusuarios(); track rolusuario.id) {
-                <option [ngValue]="rolusuario.id">
-                  {{ rolusuario.descripcion }} (ID: {{ rolusuario.id }})
-                </option>
-              }
-            </select>
-            @if (id_rolusuario?.invalid && id_rolusuario?.touched) {
-            <div class="invalid-feedback d-block">
-              @if (id_rolusuario?.errors?.['required']) {
-                <span>El rol de usuario es obligatorio.</span>
+          <!-- Sección: Rol de Usuario -->
+          <div class="fk-box p-4 rounded mb-4">
+            <div class="mb-4">
+              <label for="id_rolusuario" class="form-label">Rol de Usuario<span class="text-danger">*</span></label>
+              <select
+                id="id_rolusuario"
+                style="cursor: pointer"
+                class="form-select"
+                [class.is-invalid]="id_rolusuario?.invalid && id_rolusuario?.touched"
+                [class.is-valid]="id_rolusuario?.valid && id_rolusuario?.touched"
+                formControlName="id_rolusuario"
+              >
+                <option [value]="null" disabled>Selecciona un rol de usuario</option>
+                @for (rolusuario of rolusuarios(); track rolusuario.id) {
+                  <option [value]="rolusuario.id">{{ rolusuario.descripcion }}</option>
+                }
+              </select>
+              @if (id_rolusuario?.invalid && id_rolusuario?.touched) {
+                <div class="invalid-feedback">
+                  <span>Debe seleccionar un rol de usuario.</span>
+                </div>
               }
             </div>
-            }
+
+            <div class="d-flex gap-3 align-items-end flex-wrap">
+              <button type="button" class="btn btn-info" (click)="openRolusuarioFinderModal()">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+              <div>
+                <label for="display_id_rolusuario" class="form-label">ID Rol</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="display_id_rolusuario"
+                  [value]="displayIdRolusuario() || ''"
+                  readonly
+                />
+              </div>
+              @if (selectedRolusuario()) {
+                <div class="grow">
+                  <label class="form-label">Descripción</label>
+                  <p class="form-control-plaintext fw-semibold mb-0">
+                    {{ selectedRolusuario()?.descripcion }}
+                  </p>
+                </div>
+              }
+            </div>
           </div>
 
           <!-- Botones -->
@@ -298,6 +367,62 @@
           </div>
         </form>
         }
+
+        <ng-template #rolusuarioFinderDialog let-dialogRef="dialogRef">
+          <div class="p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="h5 mb-0">Seleccionar rol de usuario</h2>
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="dialogRef.close()">
+                Cerrar
+              </button>
+            </div>
+
+            <div class="mb-3">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Buscar por ID o descripción"
+                [value]="rolusuarioFiltro()"
+                (input)="onRolusuarioFilterChange($any($event.target).value)"
+              />
+            </div>
+
+            <div class="table-responsive finder-table">
+              <table class="table table-striped table-bordered align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th style="width: 15%">ID</th>
+                    <th>Descripción</th>
+                    <th style="width: 20%">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if (rolusuariosFiltrados().length === 0) {
+                    <tr>
+                      <td colspan="3" class="text-center text-muted py-4">No hay roles disponibles.</td>
+                    </tr>
+                  }
+
+                  @for (rolusuario of rolusuariosFiltrados(); track rolusuario.id) {
+                    <tr>
+                      <td>{{ rolusuario.id }}</td>
+                      <td>{{ rolusuario.descripcion }}</td>
+                      <td class="text-center">
+                        <button
+                          type="button"
+                          class="btn btn-success btn-sm"
+                          (click)="selectRolusuarioFromDialog(rolusuario, dialogRef)"
+                        >
+                          <i class="bi bi-check-circle me-1"></i>Seleccionar
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

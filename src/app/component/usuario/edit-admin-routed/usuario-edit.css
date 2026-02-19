@@ -1,0 +1,24 @@
+.fk-box {
+	background-color: #e4e4e4;
+	border-left: 4px solid #0d6efd;
+}
+
+.grow {
+	flex: 1 1 auto;
+}
+
+::ng-deep .club-dialog .mat-mdc-dialog-container,
+::ng-deep .tipousuario-dialog .mat-mdc-dialog-container,
+::ng-deep .rolusuario-dialog .mat-mdc-dialog-container {
+	padding: 20px 30px;
+}
+
+::ng-deep .club-dialog .mat-mdc-dialog-surface,
+::ng-deep .tipousuario-dialog .mat-mdc-dialog-surface,
+::ng-deep .rolusuario-dialog .mat-mdc-dialog-surface {
+	padding: 20px 30px;
+}
+
+.finder-table {
+	max-height: 560px;
+}
